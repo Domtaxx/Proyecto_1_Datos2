@@ -5,8 +5,10 @@ template<typename T>
 class VSPtr{
 private:
     T* dato;
+    int cantReferencias;
     VSPtr(){
         dato = new T;
+        cantReferencias = 0;
     };
 public:
     static VSPtr<T> New(){
