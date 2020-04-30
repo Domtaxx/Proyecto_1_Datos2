@@ -155,3 +155,12 @@ _deps
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
+
+build-VSC_ext-Desktop-Debug/.cmake/api/v1/query/
+
+build-VSC_ext-Desktop-Debug/.cmake/
+build-VSC_ext-Desktop-Debug/.cmake/api/v1/reply/codemodel-v2-64594b77ffb8a4d64faf.json
+
+build-VSC_ext-Desktop-Debug/.cmake/api/v1/reply/cache-v2-3a20e0d9f6b1215183a8.json
+
+build-VSC_ext-Desktop-Debug/qtcsettings.cmake

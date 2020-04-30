@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="VSC_ext"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/domtaxx/Desktop/ Github Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/domtaxx/Desktop/ Github Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="VSC_ext">
+				<Option output="/home/domtaxx/Desktop/ Github Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/VSC_ext" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/domtaxx/Desktop/ Github Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.1/../../../../include/c++/9.2.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.1/../../../../include/c++/9.2.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.1/../../../../include/c++/9.2.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 VSC_ext"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="VSC_ext/fast">
+				<Option output="/home/domtaxx/Desktop/ Github Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/VSC_ext" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/domtaxx/Desktop/ Github Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.1/../../../../include/c++/9.2.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.1/../../../../include/c++/9.2.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.1/../../../../include/c++/9.2.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.2.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 VSC_ext/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/domtaxx/Desktop/ Github Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/domtaxx/Desktop/\ Github\ Repositorios/Proyecto_1_Datos2/build-VSC_ext-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/domtaxx/Desktop/ Github Repositorios/Proyecto_1_Datos2/VSC_ext/main.cpp">
+			<Option target="VSC_ext"/>
+		</Unit>
+		<Unit filename="/home/domtaxx/Desktop/ Github Repositorios/Proyecto_1_Datos2/VSC_ext/vsptr.hpp">
+			<Option target="VSC_ext"/>
+		</Unit>
+		<Unit filename="/home/domtaxx/Desktop/ Github Repositorios/Proyecto_1_Datos2/VSC_ext/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
