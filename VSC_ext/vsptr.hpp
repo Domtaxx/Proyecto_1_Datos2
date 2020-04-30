@@ -9,8 +9,8 @@ private:
         dato = new T;
     };
 public:
-    static VSPtr<T>* New(){
-        return new VSPtr<T>();
+    static VSPtr<T> New(){
+        return VSPtr<T>();
     };
 
     void operator =(T dataNueva){
