@@ -4,20 +4,30 @@
 template<typename T>
 class VSPtr{
 private:
-    T* dato;
+
     VSPtr(){
         dato = new T;
     };
 public:
+    T* dato;
+
     static VSPtr<T> New(){
         return VSPtr<T>();
     };
 
-    void operator =(T dataNueva){
-        *(this->dato) = dataNueva;
-        std::cout<< *dato << std::endl;
+    T operator &(){
+        return *(dato);
     };
-    void operator =(VSPtr<T> dataNueva){
+
+    VSPtr<T> operator *(){
+        return *this;
+    };
+
+    void operator=(T dataNueva){
+        *(this->dato) = dataNueva;
+    };
+
+    void operator=(VSPtr<T> dataNueva){
         (this->dato) = dataNueva.dato;
         std::cout<< *dato << std::endl;
     };

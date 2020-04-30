@@ -3,6 +3,8 @@
 int main()
 {
     VSPtr<std::string> ptr = VSPtr<std::string>::New();
-    ptr = "asda";
+    ptr = "pto";
+
+    std::cout<<&ptr<<std::endl;
     return 0;
 }
