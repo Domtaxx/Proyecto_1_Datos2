@@ -1,9 +1,8 @@
 #include <iostream>
 #include "vsptr.hpp"
-
 int main()
 {
-    VSPtr<std::string>* ptr = new VSPtr<std::string>();
-    *ptr = "asda";
+    VSPtr<std::string> ptr = VSPtr<std::string>::New();
+    ptr = "asda";
     return 0;
 }
