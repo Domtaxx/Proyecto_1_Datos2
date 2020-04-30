@@ -17,6 +17,10 @@ public:
         *(this->dato) = dataNueva;
         std::cout<< *dato << std::endl;
     };
+    void operator =(VSPtr<T> dataNueva){
+        (this->dato) = dataNueva.dato;
+        std::cout<< *dato << std::endl;
+    };
 };
 
 #endif // VSPTR_HPP
