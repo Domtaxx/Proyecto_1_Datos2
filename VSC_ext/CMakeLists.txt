@@ -8,4 +8,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(VSC_ext
     main.cpp
     vsptr.hpp
-    )
+    Linked_List.hpp
+    garbage.hpp
+    garbage.cpp)
