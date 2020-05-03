@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include "Linked_List.hpp"
-#include "vsptr.hpp"
 
 class package{
 public:
