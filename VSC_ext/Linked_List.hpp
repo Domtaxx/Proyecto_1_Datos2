@@ -4,7 +4,7 @@
 
 #ifndef LISTA_H
 #define LISTA_H
-#include <iostream>
+#include<iostream>
 #include<cstddef>
 #include<ostream>
 /**
@@ -134,13 +134,16 @@ class lista{
          * @return generic, it returns the value stored in that position
          */
         generic get_data_by_pos(int pos){
+            generic retVal;
             if(object_counter<=0 || pos>=object_counter){
-                return (generic)NULL;
+                return retVal;
             }else{
                 node<generic>* temp = head;
                 for(int i = 0; i<pos; i++){
                     temp = temp->next;
-                }return temp->data;
+                }
+                retVal = temp->data;
+                return retVal;
             }
         };
 

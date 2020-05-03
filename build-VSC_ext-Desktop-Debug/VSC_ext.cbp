@@ -82,6 +82,15 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/domtaxx/Desktop/ Github Repositorios/Proyecto_1_Datos2/VSC_ext/Linked_List.hpp">
+			<Option target="VSC_ext"/>
+		</Unit>
+		<Unit filename="/home/domtaxx/Desktop/ Github Repositorios/Proyecto_1_Datos2/VSC_ext/garbage.cpp">
+			<Option target="VSC_ext"/>
+		</Unit>
+		<Unit filename="/home/domtaxx/Desktop/ Github Repositorios/Proyecto_1_Datos2/VSC_ext/garbage.hpp">
+			<Option target="VSC_ext"/>
+		</Unit>
 		<Unit filename="/home/domtaxx/Desktop/ Github Repositorios/Proyecto_1_Datos2/VSC_ext/main.cpp">
 			<Option target="VSC_ext"/>
 		</Unit>

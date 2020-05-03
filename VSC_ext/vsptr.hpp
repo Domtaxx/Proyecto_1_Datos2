@@ -11,8 +11,6 @@ private:
         cantReferencias = 0;
     };
 public:
-    T* dato;
-
     static VSPtr<T> New(){
         return VSPtr<T>();
     };
