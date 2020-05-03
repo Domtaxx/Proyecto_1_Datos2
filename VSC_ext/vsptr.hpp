@@ -1,14 +1,17 @@
 #ifndef VSPTR_HPP
 #define VSPTR_HPP
+
 #include <iostream>
+#include "garbage.hpp"
+
 template<typename T>
 class VSPtr{
 private:
     T* dato;
-    int cantReferencias;
+    int id;
     VSPtr(){
-        dato = new T;
-        cantReferencias = 0;
+        id = -1;
+        dato = NULL;
     };
 public:
     static VSPtr<T> New(){
@@ -24,12 +27,37 @@ public:
     };
 
     void operator=(T dataNueva){
-        *(this->dato) = dataNueva;
+        if(id == -1){
+            id = GarbageCollector::getGarbageCollector()->getContador();
+            specific_package<T> pkg = new specific_package<T>(id,dataNueva);
+            GarbageCollector::getGarbageCollector()->add_Pkg_To_List(pkg);
+            dato = &(pkg.data);
+            GarbageCollector::getGarbageCollector()->setContador(id++);
+            //*(this->dato) = dataNueva;
+        }else{
+            GarbageCollector::getGarbageCollector()->lower_ref(id);
+            id = GarbageCollector::getGarbageCollector()->getContador();
+            specific_package<T> pkg = new specific_package<T>(id,dataNueva);
+            GarbageCollector::getGarbageCollector()->add_Pkg_To_List(pkg);
+            dato = &(pkg.data);
+            GarbageCollector::getGarbageCollector()->setContador(id++);
+            //*(this->dato) = dataNueva;
+        }
     };
 
     void operator=(VSPtr<T> dataNueva){
-        (this->dato) = dataNueva.dato;
-        std::cout<< *dato << std::endl;
+        if(id == -1){
+            id = dataNueva.id;
+            dato = dataNueva.dato;
+            GarbageCollector::getGarbageCollector()->add_ref(id);
+        }else{
+            GarbageCollector::getGarbageCollector()->lower_ref(id);
+            id = dataNueva.id;
+            dato = dataNueva.dato;
+            GarbageCollector::getGarbageCollector()->add_ref(id);
+            //(this->dato) = dataNueva.dato;
+        }
+        //std::cout<< *dato << std::endl;
     };
 };
 

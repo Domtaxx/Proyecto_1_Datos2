@@ -31,22 +31,6 @@ class lista{
         node<generic>* head;
         node<generic>* end;
     //Private methods
-        
-        /**
-         * @brief Get the node by pos object
-         * @param pos position of the node
-         * @return node<generic>* the pointer to that node
-         */
-        node<generic>* get_node_by_pos(int pos){
-            if(object_counter<=0 || pos>=object_counter){
-                return nullptr;
-            }else{
-                node<generic>* temp = head;
-                for(int i = 0; i<pos; i++){
-                    temp = temp->next;
-                }return temp;
-            }
-        };
 
         /**
          * @brief function that delete a node in the list,
@@ -69,7 +53,22 @@ class lista{
             return;
         };
     public:
-        
+
+        /**
+         * @brief Get the node by pos object
+         * @param pos position of the node
+         * @return node<generic>* the pointer to that node
+         */
+        node<generic>* get_node_by_pos(int pos){
+            if(object_counter<=0 || pos>=object_counter){
+                return nullptr;
+            }else{
+                node<generic>* temp = head;
+                for(int i = 0; i<pos; i++){
+                    temp = temp->next;
+                }return temp;
+            }
+        };
         /**
          * @brief Construct a new lista object
          */

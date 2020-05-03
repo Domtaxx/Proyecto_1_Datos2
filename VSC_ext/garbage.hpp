@@ -40,10 +40,13 @@ class GarbageCollector{
         lista<package*> package_List;
     public:
         static GarbageCollector* getGarbageCollector();
+        int getContador();
+        void setContador(int cont);
         lista<package*> get_Pkg_List();
         void add_Pkg_To_List(package* to_add);
         void add_ref(int id);
-        void delete_pkgs();
         void lower_ref(int id);
+        void delete_pkgs();
+
 };
 #endif

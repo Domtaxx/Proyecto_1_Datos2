@@ -16,6 +16,14 @@ GarbageCollector* GarbageCollector::getGarbageCollector(){
     return recolector;
 };
 
+int GarbageCollector::getContador(){
+    return contador;
+}
+
+void GarbageCollector::setContador(int cont){
+    contador = cont;
+}
+
 lista<package*> GarbageCollector::get_Pkg_List(){
     return package_List;
 };
@@ -58,13 +66,19 @@ void GarbageCollector::lower_ref(int id){
 };
 
 void GarbageCollector::delete_pkgs(){
-    for(int i = 0; i<package_List.get_object_counter();i++){
-        package* pkg = (package_List.get_data_by_pos(i));
-        if(pkg->ref_counter == 0){
-            std::cout<<"to delete: "<<i<<std::endl;
-            delete pkg;
-            package_List.delete_by_pos(i);
-            i-=1;
+    while(true){
+        int i = 0;
+        while(package_List.get_node_by_pos(i)->next != NULL){
+
+            package* pkg = (package_List.get_data_by_pos(i));
+            if(pkg->ref_counter == 0){
+                std::cout<<"to delete: "<<i<<std::endl;
+                delete pkg;
+                package_List.delete_by_pos(i);
+            }else{
+                i++;
+            }
         }
+        //agregar sleep de 15 segundos
     }
 };
