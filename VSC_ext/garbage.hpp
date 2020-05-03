@@ -46,6 +46,5 @@ class GarbageCollector{
         void add_ref(int id);
         void lower_ref(int id);
         void delete_pkgs();
-
 };
 #endif

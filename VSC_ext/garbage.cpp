@@ -1,5 +1,5 @@
 #include "garbage.hpp"
-
+#include <thread>
 GarbageCollector* GarbageCollector::recolector = NULL;
 
 GarbageCollector::GarbageCollector(){
@@ -66,18 +66,19 @@ void GarbageCollector::lower_ref(int id){
 };
 
 void GarbageCollector::delete_pkgs(){
-    while(true){
         for(int i = 0; i<package_List.get_object_counter(); i++){
             if(package_List.is_End(i)){
-                break;
+                package* pkg = (package_List.get_data_by_pos(i));
+                if(pkg->ref_counter == 0){
+                    delete pkg;
+                    package_List.delete_by_pos(i);
+                }break;
             }
             package* pkg = (package_List.get_data_by_pos(i));
             if(pkg->ref_counter == 0){
-                std::cout<<"to delete: "<<i<<std::endl;
                 delete pkg;
                 package_List.delete_by_pos(i);
+                i--;
             }
         }
-        //agregar sleep de 15 segundos
-    }
 };

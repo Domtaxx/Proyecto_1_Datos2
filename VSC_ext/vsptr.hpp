@@ -18,6 +18,12 @@ public:
         return VSPtr<T>();
     };
 
+    ~VSPtr(){
+        if(!(id<=-1)){
+            GarbageCollector::getGarbageCollector()->lower_ref(id);
+        }
+    };
+
     T operator &(){
         return *(dato);
     };
@@ -33,7 +39,6 @@ public:
             GarbageCollector::getGarbageCollector()->add_Pkg_To_List(pkg);
             dato = &(pkg.data);
             GarbageCollector::getGarbageCollector()->setContador(id++);
-            //*(this->dato) = dataNueva;
         }else{
             GarbageCollector::getGarbageCollector()->lower_ref(id);
             id = GarbageCollector::getGarbageCollector()->getContador();
@@ -41,7 +46,6 @@ public:
             GarbageCollector::getGarbageCollector()->add_Pkg_To_List(pkg);
             dato = &(pkg.data);
             GarbageCollector::getGarbageCollector()->setContador(id++);
-            //*(this->dato) = dataNueva;
         }
     };
 
@@ -55,9 +59,7 @@ public:
             id = dataNueva.id;
             dato = dataNueva.dato;
             GarbageCollector::getGarbageCollector()->add_ref(id);
-            //(this->dato) = dataNueva.dato;
         }
-        //std::cout<< *dato << std::endl;
     };
 };
 

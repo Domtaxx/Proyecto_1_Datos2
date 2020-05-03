@@ -203,6 +203,11 @@ class lista{
             get_node_by_pos(pos)->data = new_data;
         };
 
+        /**
+         * @brief is_End
+         * @param pos
+         * @return true if it's the final pos
+         */
         bool is_End(int pos){
            if (pos>=object_counter-1){
                return true;
