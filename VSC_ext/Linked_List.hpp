@@ -52,12 +52,15 @@ class lista{
             object_counter-=1;
             return;
         };
-    public:
 
         /**
          * @brief Get the node by pos object
          * @param pos position of the node
          * @return node<generic>* the pointer to that node
+         */
+
+        /**
+         * @brief Construct a new lista object
          */
         node<generic>* get_node_by_pos(int pos){
             if(object_counter<=0 || pos>=object_counter){
@@ -69,9 +72,7 @@ class lista{
                 }return temp;
             }
         };
-        /**
-         * @brief Construct a new lista object
-         */
+    public:
         lista(){};  
 
         /**
@@ -200,6 +201,14 @@ class lista{
          */
         void rewrite(generic new_data, int pos){
             get_node_by_pos(pos)->data = new_data;
+        };
+
+        bool is_End(int pos){
+           if (pos>=object_counter-1){
+               return true;
+           }else{
+               return false;
+           }
         };
 
 };

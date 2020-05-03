@@ -67,16 +67,15 @@ void GarbageCollector::lower_ref(int id){
 
 void GarbageCollector::delete_pkgs(){
     while(true){
-        int i = 0;
-        while(package_List.get_node_by_pos(i)->next != NULL){
-
+        for(int i = 0; i<package_List.get_object_counter(); i++){
+            if(package_List.is_End(i)){
+                break;
+            }
             package* pkg = (package_List.get_data_by_pos(i));
             if(pkg->ref_counter == 0){
                 std::cout<<"to delete: "<<i<<std::endl;
                 delete pkg;
                 package_List.delete_by_pos(i);
-            }else{
-                i++;
             }
         }
         //agregar sleep de 15 segundos
