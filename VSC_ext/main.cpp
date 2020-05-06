@@ -10,39 +10,31 @@
 #include "include/rapidjson/stringbuffer.h"
 #include "include/rapidjson/ostreamwrapper.h"
 #include <fstream>
-
+#include "socket_S.h"
 
 using namespace rapidjson;
-using namespace std;;
-
-
+using namespace std;
 bool* flag = new bool(true);
-void algo(){
-    while(*flag){
+void loopGC(){
+    while(flag){
         GarbageCollector::getGarbageCollector()->delete_pkgs();
-        std::cout<<"FIUM"<<std::endl;
         sleep(10);
     }
     return;
 };
-
+void prueba(){
+    VSPtr<int> pito = VSPtr<int>::New();
+    pito = 5;
+};
 int main(){
-    /*GarbageCollector* rec = GarbageCollector::getGarbageCollector();
-    for(int i =0; i<100001; i++){
-        rec->add_Pkg_To_List(new specific_package<int>(i,10+i));
-    }
-    rec->add_ref(3);
-    std::thread prueba(algo);
-    
-    std::cout<<rec->get_Pkg_List().get_data_by_pos(4)->id<<std::endl;
-    for(int i =0; i<1000101; i++){
-        rec->lower_ref(i);
-    }
-    std::cin.get();
-    *flag = false;
-    prueba.join();
-    delete flag; */
+    //std::thread GC(loopGC);
 
+    //std::string  p = GarbageCollector::getGarbageCollector()->get_Pkg_List().get_data_by_pos(0)->ret_Val();
+    //std::string  R = GarbageCollector::getGarbageCollector()->get_Pkg_List().get_data_by_pos(0)->ret_Type();
+
+    //std::cout<<p<<std::endl;
+    //std::cout<<typeid(4).name()<<std::endl;
+    /*
     ifstream ifs("JSONFiles/prueba.json");
     IStreamWrapper isw (ifs);
     Document root;
@@ -53,20 +45,26 @@ int main(){
     root.Accept(writer);
 
     std::string jsonStr(buffer.GetString());
-        /*if(jsonStr == "null")
+        if(jsonStr == "null"){
             std::cout << "is null..." << std::endl; //<--always here!
-        else
-        {
+        }else{
             std::cout << jsonStr.c_str() << std::endl;
-
-            root["ip"] = "123456789";
-
+            root["ip"] = "pito";
             ofstream ofs("JSONFiles/prueba.json");
             OStreamWrapper osw(ofs);
             Writer<OStreamWrapper> writer2(osw);
             root.Accept(writer2);
-        }*/
-    printf(root["ip"].GetString());
+        }
+    std::cout<<(root["angle z"].GetInt())<<::std::endl;
+    */
 
+    //Socket_S socket = Socket_S();
+    //socket.start();
 
+    prueba();
+    GarbageCollector::getGarbageCollector()->delete_pkgs();
+    *flag = false;
+    delete flag;
+    //GC.join();
+    return 0;
 }

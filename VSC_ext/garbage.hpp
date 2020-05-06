@@ -2,6 +2,7 @@
 #define GARBAGE_H
 
 #include <iostream>
+#include <exception>
 #include "Linked_List.hpp"
 
 class package{
@@ -14,7 +15,9 @@ public:
     package(){
         ref_counter=1;
     };
-    ~package(){};
+    virtual ~package(){};
+    virtual std::string ret_Type(){};
+    virtual std::string ret_Val(){};
 };
 
 template<typename J>
@@ -29,6 +32,12 @@ public:
         ref_counter=1;
     };
     ~specific_package(){};
+    std::string ret_Type(){
+        return typeid(data).name();
+    };
+    std::string ret_Val(){
+        return std::to_string(data);
+    };
 };
 
 class GarbageCollector{

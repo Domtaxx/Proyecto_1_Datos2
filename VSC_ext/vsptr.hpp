@@ -9,13 +9,19 @@ class VSPtr{
 private:
     T* dato;
     int id;
-    VSPtr(){
-        id = -1;
-        dato = NULL;
-    };
+
+
 public:
     static VSPtr<T> New(){
         return VSPtr<T>();
+    };
+
+    VSPtr(){
+        id = -1;
+        dato = new T();
+        if(GarbageCollector::getGarbageCollector()==NULL){
+            GarbageCollector::getGarbageCollector();
+        }
     };
 
     ~VSPtr(){
@@ -35,16 +41,16 @@ public:
     void operator=(T dataNueva){
         if(id == -1){
             id = GarbageCollector::getGarbageCollector()->getContador();
-            specific_package<T> pkg = new specific_package<T>(id,dataNueva);
+            specific_package<T>* pkg = new specific_package<T>(id,dataNueva);
             GarbageCollector::getGarbageCollector()->add_Pkg_To_List(pkg);
-            dato = &(pkg.data);
+            dato = &(pkg->data);
             GarbageCollector::getGarbageCollector()->setContador(id++);
         }else{
             GarbageCollector::getGarbageCollector()->lower_ref(id);
             id = GarbageCollector::getGarbageCollector()->getContador();
-            specific_package<T> pkg = new specific_package<T>(id,dataNueva);
+            specific_package<T>* pkg = new specific_package<T>(id,dataNueva);
             GarbageCollector::getGarbageCollector()->add_Pkg_To_List(pkg);
-            dato = &(pkg.data);
+            dato = &(pkg->data);
             GarbageCollector::getGarbageCollector()->setContador(id++);
         }
     };

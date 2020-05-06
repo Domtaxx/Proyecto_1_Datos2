@@ -33,6 +33,10 @@ void GarbageCollector::add_Pkg_To_List(package* to_add){
 };
 
 void GarbageCollector::add_ref(int id){
+    if(package_List.get_object_counter()==1){
+        package_List.get_data_by_pos(0)->ref_counter+=1;
+        return;
+    }
     int minP = 0;
     int maxP = package_List.get_object_counter();
     while(minP != maxP){
@@ -49,6 +53,10 @@ void GarbageCollector::add_ref(int id){
     }return;
 };
 void GarbageCollector::lower_ref(int id){
+    if(package_List.get_object_counter()==1){
+        package_List.get_data_by_pos(0)->ref_counter-=1;
+        return;
+    }
     int minP = 0;
     int maxP = package_List.get_object_counter();
     while(minP != maxP){
@@ -82,3 +90,4 @@ void GarbageCollector::delete_pkgs(){
             }
         }
 };
+

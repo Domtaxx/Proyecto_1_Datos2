@@ -31,7 +31,6 @@ class lista{
         node<generic>* head;
         node<generic>* end;
     //Private methods
-
         /**
          * @brief function that delete a node in the list,
          * this design was taken from:
