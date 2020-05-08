@@ -22,11 +22,8 @@ void loopGC(){
     }
     return;
 };
-void prueba(){
-    VSPtr<int> pito = VSPtr<int>::New();
-    pito = 5;
-};
 int main(){
+    Socket_S socket = Socket_S();
     //std::thread GC(loopGC);
 
     //std::string  p = GarbageCollector::getGarbageCollector()->get_Pkg_List().get_data_by_pos(0)->ret_Val();
@@ -58,13 +55,12 @@ int main(){
     std::cout<<(root["angle z"].GetInt())<<::std::endl;
     */
 
-    //Socket_S socket = Socket_S();
-    //socket.start();
 
-    prueba();
-    GarbageCollector::getGarbageCollector()->delete_pkgs();
+    socket.start();
     *flag = false;
     delete flag;
     //GC.join();
+
+
     return 0;
 }
