@@ -30,7 +30,15 @@ int Socket_S::mark_listening(){
     }return 1;
 }
 
-int Socket_S::accept_calls(package pack){
+int Socket_S::accept_calls(package* pack){
+    std::string val = pack->ret_Val().c_str();
+    std::string tipo = pack->ret_Type().c_str();
+    std::string addr = pack->ret_Mem_Addr().c_str();
+    std::string id = std::to_string(pack->id);
+    std::string ref = std::to_string(pack->ref_counter);
+
+    std::string msg = tipo+","+val+","+addr+","+ref;
+
     int clientSocket = accept(listening, (sockaddr*)&client, &client_Size);// aqui
     std::cout<<"me acepto \n";
     if(clientSocket == -1){
@@ -39,17 +47,17 @@ int Socket_S::accept_calls(package pack){
     }close(listening);
     memset(host, 0, NI_MAXHOST);
     memset(svc, 0, NI_MAXSERV);
-
     int result = getnameinfo((sockaddr*)&client, sizeof(client), host, NI_MAXHOST, svc, NI_MAXSERV, 0);
     if(result){
         std::cout<<" host coneccted on "<< svc<< std::endl;
     }else{
-        inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
-        std::cout<< host << " connected on "<< ntohs(client.sin_port)<< std::endl;
+//        inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
+     std::cout<< host << " connected on "<< ntohs(client.sin_port)<< std::endl;
     }std::cout<<"me sali \n";
 
-    std::string pito = pack.ret_Type()+","+pack.ret_Val()+","+pack.ret_Mem_Addr()+","+std::to_string(pack.ref_counter)+","+std::to_string(pack.id);
-    send(clientSocket, &pito, sizeof(pito),0);
+
+
+    send(clientSocket, msg.data(), msg.size() ,0);
     return 0;
 };
 

@@ -27,7 +27,7 @@ public:
     Socket_S();
     int start(int _port = 54000);
     int mark_listening();
-    int accept_calls(package pack);
+    int accept_calls(package* pack);
 };
 
 

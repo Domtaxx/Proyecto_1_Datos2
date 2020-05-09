@@ -60,7 +60,9 @@ int main(){
     specific_package<int> alv = specific_package<int>();
     alv.data = 5;
     alv.id = 1;
-    socket.accept_calls(alv);
+    package* alv2 = &alv;
+    std::cout<< alv2->ret_Type().c_str()<<"\n";
+    socket.accept_calls(&alv);
     *flag = false;
     delete flag;
     //GC.join();

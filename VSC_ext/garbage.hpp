@@ -17,9 +17,15 @@ public:
         ref_counter=1;
     };
     virtual ~package(){};
-    virtual std::string ret_Type(){};
-    virtual std::string ret_Val(){};
-    virtual std::string ret_Mem_Addr(){};
+    virtual std::string ret_Type(){
+        return "";
+    };
+    virtual std::string ret_Val(){
+        return "";
+    };
+    virtual std::string ret_Mem_Addr(){
+        return "";
+    };
 };
 
 template<typename J>
