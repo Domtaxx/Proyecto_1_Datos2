@@ -48,11 +48,7 @@ int Socket_S::accept_calls(package pack){
         std::cout<< host << " connected on "<< ntohs(client.sin_port)<< std::endl;
     }std::cout<<"me sali \n";
 
-    std::string pito = "";
-    pito+=pack.ret_Type()+",";
-    pito+=pack.ret_Val()+",";
-    pito+=std::to_string(pack.ref_counter)+",";
-    pito+=std::to_string(pack.id);
+    std::string pito = pack.ret_Type()+","+pack.ret_Val()+","+pack.ret_Mem_Addr()+","+std::to_string(pack.ref_counter)+","+std::to_string(pack.id);
     send(clientSocket, &pito, sizeof(pito),0);
     return 0;
 };

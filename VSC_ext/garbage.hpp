@@ -4,6 +4,7 @@
 #include <iostream>
 #include <exception>
 #include "Linked_List.hpp"
+#include <stdint.h>
 
 class package{
 public:
@@ -18,6 +19,7 @@ public:
     virtual ~package(){};
     virtual std::string ret_Type(){};
     virtual std::string ret_Val(){};
+    virtual std::string ret_Mem_Addr(){};
 };
 
 template<typename J>
@@ -37,6 +39,10 @@ public:
     };
     std::string ret_Val(){
         return std::to_string(data);
+    };
+    std::string ret_Mem_Addr(){
+        long addr = (long)&data;
+        return std::to_string(addr);
     };
 };
 
