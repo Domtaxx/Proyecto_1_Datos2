@@ -31,7 +31,10 @@ function activate(context) {
 		var id = this.localAddress + ': ' + this.localPort;
 		console.log('Client connected', id);
 		});
-
+		
+		client.on('data', function (data) {
+			console.log('Received: '+ data);
+		});
 
 		vscode.window.showInformationMessage('Hello World from memoryM!');
 	});

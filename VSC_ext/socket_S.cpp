@@ -1,6 +1,5 @@
 #include "socket_S.h"
 
-
 Socket_S::Socket_S(){};
 void Socket_S::set_port(int port){
     hint.sin_family = AF_INET;
@@ -20,7 +19,7 @@ int Socket_S::start(int _port){
     if(bind(listening, (sockaddr*)&hint, sizeof(hint))==-1){
         std::cerr<<"can't bind to port \n";
         return -2;
-    }std::cout<<"listen? \n";
+    }
     return mark_listening();
 };
 
@@ -28,16 +27,10 @@ int Socket_S::mark_listening(){
     if(listen(listening, SOMAXCONN)== -1){
         std::cerr<<"can't listen to clients \n";
         return -3;
-    }std::cout<<"accept? \n";
-    accept_calls();
-    return 1;
+    }return 1;
 }
 
-int Socket_S::accept_calls(){
-    sockaddr_in client;
-    socklen_t client_Size = sizeof(client);
-    char host[NI_MAXHOST];
-    char svc[NI_MAXSERV];
+int Socket_S::accept_calls(package pack){
     int clientSocket = accept(listening, (sockaddr*)&client, &client_Size);// aqui
     std::cout<<"me acepto \n";
     if(clientSocket == -1){
@@ -54,5 +47,13 @@ int Socket_S::accept_calls(){
         inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
         std::cout<< host << " connected on "<< ntohs(client.sin_port)<< std::endl;
     }std::cout<<"me sali \n";
-    return 1;
-}
+
+    std::string pito = "";
+    pito+=pack.ret_Type()+",";
+    pito+=pack.ret_Val()+",";
+    pito+=std::to_string(pack.ref_counter)+",";
+    pito+=std::to_string(pack.id);
+    send(clientSocket, &pito, sizeof(pito),0);
+    return 0;
+};
+

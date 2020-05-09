@@ -57,6 +57,10 @@ int main(){
 
 
     socket.start();
+    specific_package<int> alv = specific_package<int>();
+    alv.data = 5;
+    alv.id = 1;
+    socket.accept_calls(alv);
     *flag = false;
     delete flag;
     //GC.join();
