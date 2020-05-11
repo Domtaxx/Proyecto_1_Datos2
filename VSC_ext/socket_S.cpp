@@ -30,14 +30,23 @@ int Socket_S::mark_listening(){
     }return 1;
 }
 
-int Socket_S::accept_calls(package* pack){
-    std::string val = pack->ret_Val().c_str();
-    std::string tipo = pack->ret_Type().c_str();
-    std::string addr = pack->ret_Mem_Addr().c_str();
-    std::string id = std::to_string(pack->id);
-    std::string ref = std::to_string(pack->ref_counter);
+int Socket_S::accept_calls(){
 
-    std::string msg = tipo+","+val+","+addr+","+ref;
+    std::string msg = "";
+
+    for(int i = 0; i < GarbageCollector::getGarbageCollector()->get_Pkg_List().get_object_counter();i++){
+
+        package* pack = GarbageCollector::getGarbageCollector()->get_Pkg_List().get_data_by_pos(i);
+        std::string val = pack->ret_Val().c_str();
+        std::string tipo = pack->ret_Type().c_str();
+        std::string addr = pack->ret_Mem_Addr().c_str();
+        std::string id = std::to_string(pack->id);
+        std::string ref = std::to_string(pack->ref_counter);
+        msg = msg + tipo+","+val+","+addr+","+ref;
+        if( i != (GarbageCollector::getGarbageCollector()->get_Pkg_List().get_object_counter()-1)){
+            msg += ";";
+        }
+    }
 
     int clientSocket = accept(listening, (sockaddr*)&client, &client_Size);// aqui
     std::cout<<"me acepto \n";

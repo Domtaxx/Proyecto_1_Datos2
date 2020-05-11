@@ -1,4 +1,4 @@
-#include "garbage.hpp"
+ #include "garbage.hpp"
 #include <thread>
 GarbageCollector* GarbageCollector::recolector = NULL;
 
