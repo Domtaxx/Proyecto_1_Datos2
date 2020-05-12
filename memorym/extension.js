@@ -50,22 +50,24 @@ function activate(context) {
 			datos = ''+data;
 			console.log('Received: '+ data);
 
-			var elemento = datos.split(';');
-			for(var i = 0; i < elemento.length; i++){
+			var valores = datos.split(',');
+			if(valores[0]== "0"){
+				htmlText+=`<p>Variable `+valores[1].toString() + `</p> 
+				<p style="padding-left: 30px;">Tipo: `+valores[2]+
+				`<br />Valor: ` +valores[3]+
+				`<br />Celda de memoria: ` +valores[4]+
+				`<br />Referencias actuales: ` +valores[5]+`</p>`;
+			}else if(valores[0] == "1"){
+				htmlText+=`<p>Puntero `+valores[1].toString() + `</p> 
+				<p style="padding-left: 30px;">Id: `+valores[1]+
+				`<br />Tipo: ` +valores[2]+
+				`<br />Valor: ` +valores[3]+`</p>`;
+			}else if(datos.endsWith(";")){
 
-				var valores = elemento[i].split(',');
-
-				htmlText+=`<p>Puntero `+i.toString() + `</p> 
-				<p style="padding-left: 30px;">Tipo: `+valores[0]+
-				`<br />Valor: ` +valores[1]+
-				`<br />Celda de memoria: ` +valores[2]+
-				`<br />Referencias actuales: ` +valores[3]+`</p>`;
-				
+				htmlText += `</body>
+							</html>`;
+				panel.webview.html = htmlText;
 			}
-
-			panel.webview.html = htmlText;
-			htmlText += `</body>
-					 </html>`;
 		});
 
 		const panel = vscode.window.createWebviewPanel('memoryManager', 

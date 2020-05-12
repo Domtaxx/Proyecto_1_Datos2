@@ -58,11 +58,6 @@ int main(){
     VSPtr<int> ptr = VSPtr<int>::New();
     ptr = 5;
     socket.start();
-    specific_package<int> alv = specific_package<int>();
-    alv.data = 5;
-    alv.id = 1;
-    package* alv2 = &alv;
-    std::cout<< alv2->ret_Type().c_str()<<"\n";
     socket.accept_calls();
     *flag = false;
     delete flag;

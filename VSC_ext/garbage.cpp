@@ -1,4 +1,4 @@
- #include "garbage.hpp"
+#include "garbage.hpp"
 #include <thread>
 GarbageCollector* GarbageCollector::recolector = NULL;
 
@@ -30,6 +30,14 @@ lista<package*> GarbageCollector::get_Pkg_List(){
 
 void GarbageCollector::add_Pkg_To_List(package* to_add){
     package_List.insert(to_add);
+};
+
+lista<vsptrNT*> GarbageCollector::get_Vsptr_List(){
+    return vsptr_List;
+};
+
+void GarbageCollector::add_Vsptr_To_List(vsptrNT* to_add){
+    vsptr_List.insert(to_add);
 };
 
 void GarbageCollector::add_ref(int id){
