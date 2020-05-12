@@ -3,16 +3,15 @@
 
 #include <stdio.h>
 #include <iostream>
-
 class vsptrNT{
 public:
     int id;
     vsptrNT(int _id){
         id = _id;
     };
-    vsptrNT(){
+    vsptrNT(){};
+    virtual ~vsptrNT(){
     };
-    virtual ~vsptrNT(){};
     virtual std::string ret_Type(){
         return "";
     };
@@ -24,7 +23,7 @@ public:
     };
     virtual std::string ret_Id(){
         return "";
-    }
+    };
 };
 
 

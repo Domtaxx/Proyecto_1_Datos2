@@ -10,25 +10,20 @@ class VSPtr: public vsptrNT{
 private:
     T* dato;
     int id;
-
-public:
-    static VSPtr<T> New(){
-        return VSPtr<T>();
-    };
-
-    VSPtr(){
+    VSPtr():vsptrNT(){
         id = -1;
         dato = new T();
         if(GarbageCollector::getGarbageCollector()==NULL){
             GarbageCollector::getGarbageCollector();
         }
+         GarbageCollector* gc = GarbageCollector::getGarbageCollector();
+         gc->add_Vsptr_To_List(this);
     };
-
-    ~VSPtr(){
-        if(!(id<=-1)){
-            GarbageCollector::getGarbageCollector()->lower_ref(id);
-        }
+public:
+    static VSPtr<T> New(){
+        return VSPtr<T>();
     };
+    ~VSPtr(){};
 
     T operator &(){
         return *(dato);
@@ -73,11 +68,18 @@ public:
         return typeid(*dato).name();
     };
     std::string ret_Val(){
-        return std::to_string(*dato);
+        if (dato==nullptr){
+            return "null";
+        }else{
+            return std::to_string(*dato);
+        }
     };
     std::string ret_Id(){
         return std::to_string(id);
-    }
+    };
+    std::string ret_Mem_Addr(){
+        return std::to_string((long)dato);
+    };
 };
 
 #endif // VSPTR_HPP

@@ -57,8 +57,18 @@ int main(){
 
     VSPtr<int> ptr = VSPtr<int>::New();
     ptr = 5;
+    VSPtr<int> ptr1 = VSPtr<int>::New();
+    VSPtr<int> ptr2= VSPtr<int>::New();
+    VSPtr<int> ptr3 = VSPtr<int>::New();
+    VSPtr<int> ptr4= VSPtr<int>::New();
+    ptr1=ptr;
+    ptr3=ptr1;
+    ptr=ptr1;
+    ptr4=6;
     socket.start();
     socket.accept_calls();
+
+    GarbageCollector::getGarbageCollector()->delete_pkgs();
     *flag = false;
     delete flag;
     //GC.join();

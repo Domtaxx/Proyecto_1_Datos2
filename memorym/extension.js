@@ -50,24 +50,28 @@ function activate(context) {
 			datos = ''+data;
 			console.log('Received: '+ data);
 
-			var valores = datos.split(',');
-			if(valores[0]== "0"){
-				htmlText+=`<p>Variable `+valores[1].toString() + `</p> 
-				<p style="padding-left: 30px;">Tipo: `+valores[2]+
-				`<br />Valor: ` +valores[3]+
-				`<br />Celda de memoria: ` +valores[4]+
-				`<br />Referencias actuales: ` +valores[5]+`</p>`;
-			}else if(valores[0] == "1"){
-				htmlText+=`<p>Puntero `+valores[1].toString() + `</p> 
-				<p style="padding-left: 30px;">Id: `+valores[1]+
-				`<br />Tipo: ` +valores[2]+
-				`<br />Valor: ` +valores[3]+`</p>`;
-			}else if(datos.endsWith(";")){
-
-				htmlText += `</body>
-							</html>`;
-				panel.webview.html = htmlText;
+			var pkgs = datos.split('&')[0].split(".");
+			var cantidadpkgs = pkgs.length;
+			
+			var ptrs = datos.split('&')[1].split(".");
+			var cantidadptrs = ptrs.length;
+			for(let i = 0; i<cantidadpkgs; i++){
+				var temp = pkgs[i].split(',')
+				htmlText+=`<p>Variable `+i.toString() + `</p> 
+				<p style="padding-left: 30px;">Tipo: `+temp[1]+
+				`<br />Valor: ` +temp[2]+
+				`<br />Celda de memoria: ` +temp[3]+
+				`<br />Referencias actuales: ` +temp[4]+`</p>`;
 			}
+			for(let i = 0; i<cantidadptrs; i++){
+				var temp = ptrs[i].split(',')
+				htmlText+=`<p>Puntero `+i.toString() + `</p> 
+				<p style="padding-left: 30px;">Id: `+temp[0]+
+				`<br />Tipo: ` +temp[1]+
+				`<br />Valor: ` +temp[2]+`</p>`;
+			}htmlText += `</body>
+							</html>`;
+			panel.webview.html = htmlText;
 		});
 
 		const panel = vscode.window.createWebviewPanel('memoryManager', 

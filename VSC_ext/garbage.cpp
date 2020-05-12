@@ -5,6 +5,8 @@ GarbageCollector* GarbageCollector::recolector = NULL;
 GarbageCollector::GarbageCollector(){
     recolector = NULL;
     contador = 0;
+    this->vsptr_List = lista<vsptrNT*>();
+    this->package_List = lista<package*>();
 };
 
 GarbageCollector* GarbageCollector::getGarbageCollector(){
@@ -96,6 +98,11 @@ void GarbageCollector::delete_pkgs(){
                 package_List.delete_by_pos(i);
                 i--;
             }
+        }for(int i = 0; i<this->vsptr_List.get_object_counter(); i++){
+            if(vsptr_List.get_data_by_pos(i)==nullptr){
+                vsptr_List.delete_by_pos(i);
+            }
         }
+
 };
 
