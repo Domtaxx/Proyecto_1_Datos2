@@ -10,8 +10,7 @@ public:
         id = _id;
     };
     vsptrNT(){};
-    virtual ~vsptrNT(){
-    };
+    virtual ~vsptrNT(){};
     virtual std::string ret_Type(){
         return "";
     };

@@ -60,7 +60,9 @@ class GarbageCollector{
         int contador;
         lista<package*> package_List;
         lista<vsptrNT*> vsptr_List;
+        package* binary_search_id(int id);
     public:
+        ~GarbageCollector(){};
         static GarbageCollector* getGarbageCollector();
         int getContador();
         void setContador(int cont);
@@ -71,5 +73,6 @@ class GarbageCollector{
         void add_ref(int id);
         void lower_ref(int id);
         void delete_pkgs();
+
 };
 #endif
