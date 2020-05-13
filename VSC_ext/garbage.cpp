@@ -1,10 +1,12 @@
- #include "garbage.hpp"
+#include "garbage.hpp"
 #include <thread>
 GarbageCollector* GarbageCollector::recolector = NULL;
 
 GarbageCollector::GarbageCollector(){
     recolector = NULL;
     contador = 0;
+    this->vsptr_List = lista<vsptrNT*>();
+    this->package_List = lista<package*>();
 };
 
 GarbageCollector* GarbageCollector::getGarbageCollector(){
@@ -30,6 +32,14 @@ lista<package*> GarbageCollector::get_Pkg_List(){
 
 void GarbageCollector::add_Pkg_To_List(package* to_add){
     package_List.insert(to_add);
+};
+
+lista<vsptrNT*> GarbageCollector::get_Vsptr_List(){
+    return vsptr_List;
+};
+
+void GarbageCollector::add_Vsptr_To_List(vsptrNT* to_add){
+    vsptr_List.insert(to_add);
 };
 
 void GarbageCollector::add_ref(int id){
@@ -88,6 +98,11 @@ void GarbageCollector::delete_pkgs(){
                 package_List.delete_by_pos(i);
                 i--;
             }
+        }for(int i = 0; i<this->vsptr_List.get_object_counter(); i++){
+            if(vsptr_List.get_data_by_pos(i)==nullptr){
+                vsptr_List.delete_by_pos(i);
+            }
         }
+
 };
 

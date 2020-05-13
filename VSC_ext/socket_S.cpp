@@ -33,20 +33,7 @@ int Socket_S::mark_listening(){
 int Socket_S::accept_calls(){
 
     std::string msg = "";
-
-    for(int i = 0; i < GarbageCollector::getGarbageCollector()->get_Pkg_List().get_object_counter();i++){
-
-        package* pack = GarbageCollector::getGarbageCollector()->get_Pkg_List().get_data_by_pos(i);
-        std::string val = pack->ret_Val().c_str();
-        std::string tipo = pack->ret_Type().c_str();
-        std::string addr = pack->ret_Mem_Addr().c_str();
-        std::string id = std::to_string(pack->id);
-        std::string ref = std::to_string(pack->ref_counter);
-        msg = msg + tipo+","+val+","+addr+","+ref;
-        if( i != (GarbageCollector::getGarbageCollector()->get_Pkg_List().get_object_counter()-1)){
-            msg += ";";
-        }
-    }
+    std::string VSptr = "";
 
     int clientSocket = accept(listening, (sockaddr*)&client, &client_Size);// aqui
     std::cout<<"me acepto \n";
@@ -62,11 +49,37 @@ int Socket_S::accept_calls(){
     }else{
 //        inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
      std::cout<< host << " connected on "<< ntohs(client.sin_port)<< std::endl;
-    }std::cout<<"me sali \n";
-
-
-
+    }
+    for(int i = 0; i < GarbageCollector::getGarbageCollector()->get_Pkg_List().get_object_counter();i++){
+        package* pack = GarbageCollector::getGarbageCollector()->get_Pkg_List().get_data_by_pos(i);
+        std::string val = pack->ret_Val().c_str();
+        std::string tipo = pack->ret_Type().c_str();
+        std::string addr = pack->ret_Mem_Addr().c_str();
+        std::string id = std::to_string(pack->id);
+        std::string ref = std::to_string(pack->ref_counter);
+        msg += id+","+ tipo+","+val+","+addr+","+ref;
+        if((i+1) == GarbageCollector::getGarbageCollector()->get_Pkg_List().get_object_counter()){
+            msg+= "&";
+        }else{
+            msg+= ".";
+        };
+    };
+    for(int i = 0; i < GarbageCollector::getGarbageCollector()->get_Vsptr_List().get_object_counter();i++){
+        vsptrNT* ptr = GarbageCollector::getGarbageCollector()->get_Vsptr_List().get_data_by_pos(i);
+        std::string id = ptr->ret_Id().c_str();
+        std::string type = ptr->ret_Type().c_str();
+        std::string value = ptr->ret_Val().c_str();
+        msg += id +","+ type + ","+ value;
+        if((i+1) == GarbageCollector::getGarbageCollector()->get_Vsptr_List().get_object_counter()){
+            msg+= ";";
+        }else{
+            msg+= ".";
+        };
+    };
     send(clientSocket, msg.data(), msg.size() ,0);
+
+
+    std::cout<<"finished  \n";
     return 0;
 };
 

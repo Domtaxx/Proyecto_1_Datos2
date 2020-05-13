@@ -4,6 +4,7 @@
 #include <iostream>
 #include <exception>
 #include "Linked_List.hpp"
+#include "vsptrNT.hpp"
 #include <stdint.h>
 
 class package{
@@ -58,12 +59,15 @@ class GarbageCollector{
         static GarbageCollector* recolector;
         int contador;
         lista<package*> package_List;
+        lista<vsptrNT*> vsptr_List;
     public:
         static GarbageCollector* getGarbageCollector();
         int getContador();
         void setContador(int cont);
         lista<package*> get_Pkg_List();
         void add_Pkg_To_List(package* to_add);
+        lista<vsptrNT*> get_Vsptr_List();
+        void add_Vsptr_To_List(vsptrNT* to_add);
         void add_ref(int id);
         void lower_ref(int id);
         void delete_pkgs();

@@ -15,4 +15,5 @@ add_executable(VSC_ext
     garbage.hpp
     garbage.cpp
     socket_S.cpp
+    vsptrNT.hpp
     socket_S.h)
