@@ -23,7 +23,10 @@ public:
     static VSPtr<T> New(){
         return VSPtr<T>();
     };
-    ~VSPtr(){};
+    ~VSPtr(){
+        GarbageCollector* gc = GarbageCollector::getGarbageCollector();
+        gc->lower_ref(this->id);
+    };
 
     T operator &(){
         return *(dato);
@@ -39,14 +42,14 @@ public:
             specific_package<T>* pkg = new specific_package<T>(id,dataNueva);
             GarbageCollector::getGarbageCollector()->add_Pkg_To_List(pkg);
             dato = &(pkg->data);
-            GarbageCollector::getGarbageCollector()->setContador(id++);
+            GarbageCollector::getGarbageCollector()->setContador(id+1);
         }else{
             GarbageCollector::getGarbageCollector()->lower_ref(id);
             id = GarbageCollector::getGarbageCollector()->getContador();
             specific_package<T>* pkg = new specific_package<T>(id,dataNueva);
             GarbageCollector::getGarbageCollector()->add_Pkg_To_List(pkg);
             dato = &(pkg->data);
-            GarbageCollector::getGarbageCollector()->setContador(id++);
+            GarbageCollector::getGarbageCollector()->setContador(id+1);
         }
     };
 
@@ -56,10 +59,12 @@ public:
             id = dataNueva.id;
             dato = dataNueva.dato;
             GarbageCollector::getGarbageCollector()->add_ref(id);
+            GarbageCollector::getGarbageCollector()->add_ref(id);
         }else{
             GarbageCollector::getGarbageCollector()->lower_ref(id);
             id = dataNueva.id;
             dato = dataNueva.dato;
+            GarbageCollector::getGarbageCollector()->add_ref(id);
             GarbageCollector::getGarbageCollector()->add_ref(id);
         }
     };

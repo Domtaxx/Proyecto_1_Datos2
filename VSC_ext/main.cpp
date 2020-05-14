@@ -65,8 +65,8 @@ int main(){
     ptr3=ptr1;
     ptr=ptr1;
     ptr4=6;
-    socket.start();
-    socket.accept_calls();
+    //socket.start();
+    //socket.accept_calls();
 
     GarbageCollector::getGarbageCollector()->delete_pkgs();
     *flag = false;

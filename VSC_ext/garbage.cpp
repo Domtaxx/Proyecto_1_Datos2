@@ -32,6 +32,7 @@ lista<package*> GarbageCollector::get_Pkg_List(){
 
 void GarbageCollector::add_Pkg_To_List(package* to_add){
     package_List.insert(to_add);
+    ;
 };
 
 lista<vsptrNT*> GarbageCollector::get_Vsptr_List(){
@@ -43,45 +44,43 @@ void GarbageCollector::add_Vsptr_To_List(vsptrNT* to_add){
 };
 
 void GarbageCollector::add_ref(int id){
-    if(package_List.get_object_counter()==1){
-        package_List.get_data_by_pos(0)->ref_counter+=1;
-        return;
+    if(id>=0){
+        package* pkg = binary_search_id(id);
+        pkg->ref_counter+=1;
     }
-    int minP = 0;
-    int maxP = package_List.get_object_counter();
-    while(minP != maxP){
-        int midP = (minP+maxP)/2;
-        package* pkg = (package_List.get_data_by_pos(midP));
-        if(pkg->id == id){
-            pkg->ref_counter+=1;
-            return;
-        }else if(pkg->id > id){
-            maxP = midP;
-        }else{
-            minP = midP;
-        }
-    }return;
+    return;
 };
 void GarbageCollector::lower_ref(int id){
-    if(package_List.get_object_counter()==1){
-        package_List.get_data_by_pos(0)->ref_counter-=1;
-        return;
+    if(id>=0){
+        package* pkg = binary_search_id(id);
+        pkg->ref_counter-=1;
     }
-    int minP = 0;
-    int maxP = package_List.get_object_counter();
-    while(minP != maxP){
-        int midP = (minP+maxP)/2;
-        package* pkg = (package_List.get_data_by_pos(midP));
-        if(pkg->id == id){
-            pkg->ref_counter-=1;
-            return;
-        }else if(pkg->id > id){
-            maxP = midP;
-        }else{
-            minP = midP;
-        }
-    }return;
+    return;
 };
+
+package* GarbageCollector::binary_search_id(int id){
+    package* pkg = nullptr;
+    if(id >= 0){
+        int maxP, minP, midP;
+        maxP = package_List.get_object_counter()-1;
+        minP =0;
+        if(maxP == 0){
+            pkg = package_List.get_data_by_pos(0);
+            return pkg;
+        }
+        while(minP <= maxP){
+            midP = minP + ((maxP-minP)/2);
+            if(package_List.get_data_by_pos(midP)->id == id){
+                pkg = (package_List.get_data_by_pos(midP));
+                return pkg;
+            }else if(package_List.get_data_by_pos(midP)->id < id){
+                minP = midP+1;
+            }else{
+                minP = midP-1;
+            }
+        }
+    }return pkg;
+}
 
 void GarbageCollector::delete_pkgs(){
         for(int i = 0; i<package_List.get_object_counter(); i++){
