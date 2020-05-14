@@ -29,7 +29,7 @@ public:
      * @brief Socket_S constructor
      */
     Socket_C();
-    static Socket* remoteSocket;
+    static Socket* remoteSocket = nullptr;
     int start(int _port = 54000);
     int mark_listening();
     int accept_calls();
