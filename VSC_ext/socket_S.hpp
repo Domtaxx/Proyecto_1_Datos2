@@ -1,4 +1,3 @@
-
 #ifndef SOCKET_HPP
 #define SOCKET_HPP
 
@@ -11,8 +10,6 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <string>
-
-using namespace std;
 /**
  * @brief The Socket class
  * Clase que controla la creación de sockets, así como su comunicación con el servidor

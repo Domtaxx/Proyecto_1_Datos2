@@ -9,9 +9,11 @@
 #include <string.h>
 #include <string>
 #include "garbage.hpp"
+#include "thread"
 
-class Socket_S{
+class Socket_C{
 private:
+    bool end = false;
     int listening;
     sockaddr_in hint;
     void set_port(int port);
@@ -19,12 +21,13 @@ private:
     socklen_t client_Size = sizeof(client);
     char host[NI_MAXHOST];
     char svc[NI_MAXSERV];
+    static void start_garbage();
 
 public:
     /**
      * @brief Socket_S constructor
      */
-    Socket_S();
+    Socket_C();
     int start(int _port = 54000);
     int mark_listening();
     int accept_calls();

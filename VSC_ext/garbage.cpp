@@ -1,5 +1,7 @@
 #include "garbage.hpp"
+#include "vsptr.hpp"
 #include <thread>
+
 GarbageCollector* GarbageCollector::recolector = NULL;
 
 GarbageCollector::GarbageCollector(){
@@ -102,6 +104,8 @@ void GarbageCollector::delete_pkgs(){
                 vsptr_List.delete_by_pos(i);
             }
         }
-
 };
 
+bool* GarbageCollector::getbool(){
+    return server_on;
+}

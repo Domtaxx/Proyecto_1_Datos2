@@ -6,6 +6,7 @@ project(VSC_ext LANGUAGES CXX)
 #find_library(rapidjson REQUIRED_FILES)
 #doxygen_add_docs(docs . ALL)
 
+find_package(Threads REQUIRED)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(VSC_ext
@@ -14,6 +15,8 @@ add_executable(VSC_ext
     Linked_List.hpp
     garbage.hpp
     garbage.cpp
-    socket_S.cpp
+    socket_C.cpp
     vsptrNT.hpp
-    socket_S.h)
+    socket_C.h
+    socket_S.hpp)
+set_target_properties(VSC_ext PROPERTIES COMPILE_FLAGS -pthread LINK_FLAGS -pthread)

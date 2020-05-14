@@ -10,21 +10,14 @@
 #include "include/rapidjson/stringbuffer.h"
 #include "include/rapidjson/ostreamwrapper.h"
 #include <fstream>
-#include "socket_S.h"
+#include "socket_C.h"
 
 using namespace rapidjson;
-using namespace std;
-bool* flag = new bool(true);
-void loopGC(){
-    while(flag){
-        GarbageCollector::getGarbageCollector()->delete_pkgs();
-        sleep(10);
-    }
-    return;
-};
-int main(){
-    Socket_S socket = Socket_S();
-    //std::thread GC(loopGC);
+bool* server_on = new bool(false);
+
+extern "C" int main(){
+    Socket_C socket = Socket_C();
+
 
     //std::string  p = GarbageCollector::getGarbageCollector()->get_Pkg_List().get_data_by_pos(0)->ret_Val();
     //std::string  R = GarbageCollector::getGarbageCollector()->get_Pkg_List().get_data_by_pos(0)->ret_Type();
@@ -54,7 +47,7 @@ int main(){
         }
     std::cout<<(root["angle z"].GetInt())<<::std::endl;
     */
-
+    std::cout<<"jaja"<<::std::endl;
     VSPtr<int> ptr = VSPtr<int>::New();
     ptr = 5;
     VSPtr<int> ptr1 = VSPtr<int>::New();
@@ -65,14 +58,11 @@ int main(){
     ptr3=ptr1;
     ptr=ptr1;
     ptr4=6;
-    //socket.start();
-    //socket.accept_calls();
+    socket.start();
+    socket.accept_calls();
 
-    GarbageCollector::getGarbageCollector()->delete_pkgs();
-    *flag = false;
-    delete flag;
-    //GC.join();
-
+    //GarbageCollector::getGarbageCollector()->delete_pkgs();
+    delete server_on;
 
     return 0;
 }

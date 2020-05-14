@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 const net = require('net');
-
+const ffi = require('ffi-napi');
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -24,18 +24,18 @@ function activate(context) {
 
 		// Display a message box to the user
 
-
 		var Client = net.createConnection;
 		var client = Client({port: 54000, localAddress: '127.0.0.1', localPort: 51000});
 		var datos = " ";
-		
 		
 
 		client.on('connect', function() {
 		var id = this.localAddress + ': ' + this.localPort;
 		console.log('Client connected', id);
+		client.write("@@@")
 		});
 
+		
 		
 		var htmlText = `<!DOCTYPE html>
 		<html lang="en">
