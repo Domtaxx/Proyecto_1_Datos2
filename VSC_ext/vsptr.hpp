@@ -20,6 +20,7 @@ private:
          gc->add_Vsptr_To_List(this);
     };
 public:
+    static bool server_on;
     static VSPtr<T> New(){
         return VSPtr<T>();
     };
@@ -85,6 +86,8 @@ public:
     std::string ret_Mem_Addr(){
         return std::to_string((long)dato);
     };
+
 };
+
 
 #endif // VSPTR_HPP
