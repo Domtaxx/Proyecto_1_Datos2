@@ -10,6 +10,8 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <string>
+
+using namespace std;
 /**
  * @brief The Socket class
  * Clase que controla la creación de sockets, así como su comunicación con el servidor
@@ -20,11 +22,12 @@ public:
     /**
      * Constructor del socket, encargado de iniciarlizar el socket y conectarlo al servidor
     */
-    Socket();
+    Socket(int puerto, std::string ip);
     /**
      * @brief sock
      * Variable que almacena el socket creado en el constructor
      */
+    static int vsptr_counter;
     int sock;
     /**
      * @brief conectar

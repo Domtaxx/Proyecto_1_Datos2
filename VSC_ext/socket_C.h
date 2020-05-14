@@ -10,6 +10,7 @@
 #include <string>
 #include "garbage.hpp"
 #include "thread"
+#include "socket.hpp"
 
 class Socket_C{
 private:
@@ -28,6 +29,7 @@ public:
      * @brief Socket_S constructor
      */
     Socket_C();
+    static Socket* remoteSocket;
     int start(int _port = 54000);
     int mark_listening();
     int accept_calls();

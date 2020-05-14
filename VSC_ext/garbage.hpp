@@ -62,10 +62,11 @@ class GarbageCollector{
         lista<package*> package_List;
         lista<vsptrNT*> vsptr_List;
         package* binary_search_id(int id);
-        bool* server_on = new bool(false);
+
     public:
         ~GarbageCollector(){};
         static GarbageCollector* getGarbageCollector();
+        static bool server_on;
         int getContador();
         void setContador(int cont);
         lista<package*> get_Pkg_List();
@@ -75,7 +76,6 @@ class GarbageCollector{
         void add_ref(int id);
         void lower_ref(int id);
         void delete_pkgs();
-        bool* getbool();
         
 };
 #endif

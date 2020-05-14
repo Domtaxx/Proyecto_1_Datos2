@@ -8,7 +8,7 @@ void Socket_C::set_port(int port){
 }
 void Socket_C::start_garbage(){
     GarbageCollector* rec = GarbageCollector::getGarbageCollector();
-    while(!*(rec->getbool())){
+    while(!rec->server_on){
         rec->delete_pkgs();
         sleep(10);
     };
@@ -95,7 +95,8 @@ int Socket_C::accept_calls(){
             };
             send(clientSocket, msg.data(), msg.size() ,0);
         }else if (buf[0]=='@' && buf[1]=='@' && buf[2]=='@'){
-
+            GarbageCollector::server_on = true;
+            remoteSocket = new Socket(54000,"127.0.0.1");
         }
     };
 

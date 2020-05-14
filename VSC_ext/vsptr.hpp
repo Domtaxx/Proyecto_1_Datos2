@@ -4,23 +4,32 @@
 #include <iostream>
 #include "vsptrNT.hpp"
 #include "garbage.hpp"
+#include "socket.hpp"
+#include "socket_C.h"
 
 template<typename T>
 class VSPtr: public vsptrNT{
 private:
     T* dato;
     int id;
+    int localId;
     VSPtr():vsptrNT(){
-        id = -1;
-        dato = new T();
-        if(GarbageCollector::getGarbageCollector()==NULL){
-            GarbageCollector::getGarbageCollector();
+        if(GarbageCollector::server_on){
+            localId = Socket::vsptr_counter;
+            Socket_C::remoteSocket->comunicar("identificacion y tipo, segundo contador");
+            Socket::vsptr_counter = localId+1;
+        }else{
+            id = -1;
+            dato = new T();
+            if(GarbageCollector::getGarbageCollector()==NULL){
+                GarbageCollector::getGarbageCollector();
+            }
+             GarbageCollector* gc = GarbageCollector::getGarbageCollector();
+             gc->add_Vsptr_To_List(this);
         }
-         GarbageCollector* gc = GarbageCollector::getGarbageCollector();
-         gc->add_Vsptr_To_List(this);
     };
 public:
-    static bool server_on;
+
     static VSPtr<T> New(){
         return VSPtr<T>();
     };

@@ -11,6 +11,7 @@
 #include "include/rapidjson/ostreamwrapper.h"
 #include <fstream>
 #include "socket_C.h"
+#include "socket.hpp"
 
 using namespace rapidjson;
 bool* server_on = new bool(false);

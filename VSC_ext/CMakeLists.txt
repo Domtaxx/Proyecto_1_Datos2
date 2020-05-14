@@ -11,12 +11,13 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(VSC_ext
     main.cpp
+    vsptrNT.hpp
     vsptr.hpp
     Linked_List.hpp
     garbage.hpp
     garbage.cpp
     socket_C.cpp
-    vsptrNT.hpp
     socket_C.h
-    socket_S.hpp)
-set_target_properties(VSC_ext PROPERTIES COMPILE_FLAGS -pthread LINK_FLAGS -pthread)
+    socket.hpp
+    socket.cpp
+    )

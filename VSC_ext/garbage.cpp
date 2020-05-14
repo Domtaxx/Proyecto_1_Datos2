@@ -3,7 +3,7 @@
 #include <thread>
 
 GarbageCollector* GarbageCollector::recolector = NULL;
-
+bool GarbageCollector::server_on = false;
 GarbageCollector::GarbageCollector(){
     recolector = NULL;
     contador = 0;
@@ -105,7 +105,3 @@ void GarbageCollector::delete_pkgs(){
             }
         }
 };
-
-bool* GarbageCollector::getbool(){
-    return server_on;
-}
