@@ -16,7 +16,7 @@ private:
     VSPtr():vsptrNT(){
         if(GarbageCollector::server_on){
             localId = Socket::vsptr_counter;
-            Socket_C::remoteSocket->comunicar("identificacion y tipo, segundo contador");
+            Socket_C::remoteSocket->comunicar("$"+this->ret_Type()+std::to_string(localId));
             Socket::vsptr_counter = localId+1;
         }else{
             id = -1;
@@ -34,48 +34,71 @@ public:
         return VSPtr<T>();
     };
     ~VSPtr(){
-        GarbageCollector* gc = GarbageCollector::getGarbageCollector();
-        gc->lower_ref(this->id);
+        if(GarbageCollector::server_on){
+            Socket_C::remoteSocket->comunicar("~"+std::to_string(localId));
+        }else{
+            GarbageCollector* gc = GarbageCollector::getGarbageCollector();
+            gc->lower_ref(this->id);
+        }
     };
 
     T operator &(){
-        return *(dato);
+        if(GarbageCollector::server_on){
+            Socket_C::remoteSocket->comunicar("&"+localId);
+        }else{
+            return *(dato);
+        }
     };
 
     VSPtr<T> operator *(){
-        return *this;
+        if(GarbageCollector::server_on){
+
+        }else{
+            return *this;
+        }
     };
 
     void operator=(T dataNueva){
-        if(id == -1){
-            id = GarbageCollector::getGarbageCollector()->getContador();
-            specific_package<T>* pkg = new specific_package<T>(id,dataNueva);
-            GarbageCollector::getGarbageCollector()->add_Pkg_To_List(pkg);
-            dato = &(pkg->data);
-            GarbageCollector::getGarbageCollector()->setContador(id+1);
+        if(GarbageCollector::server_on){
+            std::string msg = "#p."+localId;
+            msg += "."+ std::to_string(dataNueva) + ".";
+            Socket_C::remoteSocket->comunicar(msg);
         }else{
-            GarbageCollector::getGarbageCollector()->lower_ref(id);
-            id = GarbageCollector::getGarbageCollector()->getContador();
-            specific_package<T>* pkg = new specific_package<T>(id,dataNueva);
-            GarbageCollector::getGarbageCollector()->add_Pkg_To_List(pkg);
-            dato = &(pkg->data);
-            GarbageCollector::getGarbageCollector()->setContador(id+1);
+            if(id == -1){
+                id = GarbageCollector::getGarbageCollector()->getContador();
+                specific_package<T>* pkg = new specific_package<T>(id,dataNueva);
+                GarbageCollector::getGarbageCollector()->add_Pkg_To_List(pkg);
+                dato = &(pkg->data);
+                GarbageCollector::getGarbageCollector()->setContador(id+1);
+            }else{
+                GarbageCollector::getGarbageCollector()->lower_ref(id);
+                id = GarbageCollector::getGarbageCollector()->getContador();
+                specific_package<T>* pkg = new specific_package<T>(id,dataNueva);
+                GarbageCollector::getGarbageCollector()->add_Pkg_To_List(pkg);
+                dato = &(pkg->data);
+                GarbageCollector::getGarbageCollector()->setContador(id+1);
+            }
         }
     };
 
     void operator=(VSPtr<T> dataNueva){
-
-        if(id == -1){
-            id = dataNueva.id;
-            dato = dataNueva.dato;
-            GarbageCollector::getGarbageCollector()->add_ref(id);
-            GarbageCollector::getGarbageCollector()->add_ref(id);
+        if(GarbageCollector::server_on){
+            std::string msg = "#d."+localId;
+            msg += "."+dataNueva.ret_Local_id() +".";
+            Socket_C::remoteSocket->comunicar(msg);
         }else{
-            GarbageCollector::getGarbageCollector()->lower_ref(id);
-            id = dataNueva.id;
-            dato = dataNueva.dato;
-            GarbageCollector::getGarbageCollector()->add_ref(id);
-            GarbageCollector::getGarbageCollector()->add_ref(id);
+            if(id == -1){
+                id = dataNueva.id;
+                dato = dataNueva.dato;
+                GarbageCollector::getGarbageCollector()->add_ref(id);
+                GarbageCollector::getGarbageCollector()->add_ref(id);
+            }else{
+                GarbageCollector::getGarbageCollector()->lower_ref(id);
+                id = dataNueva.id;
+                dato = dataNueva.dato;
+                GarbageCollector::getGarbageCollector()->add_ref(id);
+                GarbageCollector::getGarbageCollector()->add_ref(id);
+            }
         }
     };
 

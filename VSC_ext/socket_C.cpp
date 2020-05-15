@@ -96,7 +96,7 @@ int Socket_C::accept_calls(){
             send(clientSocket, msg.data(), msg.size() ,0);
         }else if (buf[0]=='@' && buf[1]=='@' && buf[2]=='@'){
             GarbageCollector::server_on = true;
-            remoteSocket = new Socket(54000,"127.0.0.1");
+            Socket_C::remoteSocket = new Socket(54000,"127.0.0.1");
         }
     };
 
