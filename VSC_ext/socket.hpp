@@ -22,7 +22,7 @@ public:
     /**
      * Constructor del socket, encargado de iniciarlizar el socket y conectarlo al servidor
     */
-    Socket(int puerto, std::string ip);
+    Socket(int puerto = 54000, std::string ip = "0.0.0.0");
     /**
      * @brief sock
      * Variable que almacena el socket creado en el constructor
