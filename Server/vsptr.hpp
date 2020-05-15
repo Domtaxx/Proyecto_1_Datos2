@@ -10,6 +10,7 @@ class VSPtr: public vsptrNT{
 private:
     T* dato;
     int id;
+    int localID;
     VSPtr():vsptrNT(){
         id = -1;
         dato = new T();
@@ -30,7 +31,7 @@ public:
     };
 
     T operator &(){
-        return *(dato);
+        return (*dato);
     };
 
     VSPtr<T> operator *(){

@@ -20,7 +20,9 @@ int main(){
     ptr3=ptr1;
     ptr=ptr1;
     ptr4=6;
-    socket.start();
-    socket.accept_calls();
+    long* as;
+    std::cout<<typeid(as).name()<<"\n";
+    //socket.start();
+    //socket.accept_calls();
 
 }

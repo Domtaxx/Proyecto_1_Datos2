@@ -9,6 +9,9 @@
 #include <string.h>
 #include <string>
 #include "garbage.hpp"
+#include <climits>
+#include "vsptr.hpp"
+
 
 class Socket_S{
 private:

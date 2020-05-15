@@ -23,6 +23,9 @@ public:
     virtual std::string ret_Id(){
         return "";
     };
+    virtual std::string ret_Local_Id(){
+        return "";
+    };
 };
 
 

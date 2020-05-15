@@ -1,5 +1,5 @@
 #include "socket_S.h"
-
+#include <climits>
 Socket_S::Socket_S(){};
 void Socket_S::set_port(int port, std::string ip){
     hint.sin_family = AF_INET;
@@ -57,9 +57,51 @@ int Socket_S::accept_calls(){
             std::cerr << "Conexión perdida" << std::endl;
             return -5;
         }
-        if(buf[0] == '$' && buf[1] == '$'){
-            
+        if(buf[0] == '$'){
+            //crear vsp
+            if(buf[1] == 'i'){//int
+                VSPtr<int> ptr = VSPtr<int>::New();
+            }else if(buf[1] == 'd'){//double
+                VSPtr<double> ptr = VSPtr<double>::New();
+            }else if(buf[1] == 'b'){//bool
+                VSPtr<bool> ptr = VSPtr<bool>::New();
+            }else if(buf[1] == 'f'){//float
+                VSPtr<float> ptr = VSPtr<float>::New();
+            }else if(buf[1] == 'c'){//char
+                VSPtr<char> ptr = VSPtr<char>::New();
+            }else if(buf[1] == 'l'){//long
+                VSPtr<long> ptr = VSPtr<long>::New();
+            }else if(buf[1] == 'x'){//long long
+                VSPtr<long long> ptr = VSPtr<long long>::New();
+            }else if(buf[1] == 'e'){//long double
+                VSPtr<long double> ptr = VSPtr<long double>::New();
+            }else if(buf[1] == 'P'){
+                if(buf[2] == 'i'){//int
+                    VSPtr<int*> ptr = VSPtr<int*>::New();
+                }else if(buf[2] == 'd'){//double
+                    VSPtr<double*> ptr = VSPtr<double*>::New();
+                }else if(buf[2] == 'b'){//bool
+                    VSPtr<bool*> ptr = VSPtr<bool*>::New();
+                }else if(buf[2] == 'f'){//float
+                    VSPtr<float*> ptr = VSPtr<float*>::New();
+                }else if(buf[2] == 'c'){//char
+                    VSPtr<char*> ptr = VSPtr<char*>::New();
+                }else if(buf[2] == 'l'){//long
+                    VSPtr<long*> ptr = VSPtr<long*>::New();
+                }else if(buf[2] == 'x'){//long long
+                    VSPtr<long long*> ptr = VSPtr<long long*>::New();
+                }else if(buf[2] == 'e'){//long double
+                    VSPtr<long double*> ptr = VSPtr<long double*>::New();
+                }
+            }
+        }else if(buf[0]== '#'){
+            //asignar valor VSP
+        }else if(buf[0]== '&'){
+            //devolver valor dentro del VSPtr(&)
+        }else if(buf[0]== '~'){
+           //borrar valor 
         }
+        
         msg = data_GC();
         send(clientSocket, msg.data(), msg.size() ,0);
     }

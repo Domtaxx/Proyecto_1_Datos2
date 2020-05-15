@@ -10,7 +10,6 @@
 template<typename T>
 class VSPtr: public vsptrNT{
 private:
-
     T* dato;
     int id;
     int localId;
@@ -19,6 +18,7 @@ private:
             localId = Socket::vsptr_counter;
             Socket_C::remoteSocket->comunicar("identificacion y tipo, segundo contador");
             Socket::vsptr_counter = localId+1;
+            Socket::vsptr_counter+=1;
         }else{
             id = -1;
             dato = new T();
@@ -96,7 +96,9 @@ public:
     std::string ret_Mem_Addr(){
         return std::to_string((long)dato);
     };
-
+    std::string ret_Local_Id(){
+        return std::to_string(localId);
+    };
 };
 
 
