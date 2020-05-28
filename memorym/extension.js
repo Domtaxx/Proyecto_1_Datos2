@@ -32,7 +32,7 @@ function activate(context) {
 		client.on('connect', function() {
 		var id = this.localAddress + ': ' + this.localPort;
 		console.log('Client connected', id);
-		client.write("@@@")
+		client.write("$i")
 		});
 
 		

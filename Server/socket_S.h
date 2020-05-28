@@ -30,7 +30,6 @@ public:
     Socket_S();
     int start(int _port = 54000, std::string _ip = "0.0.0.0");
     int mark_listening();
-    int accept_calls();
     std::string data_GC();
 };
 

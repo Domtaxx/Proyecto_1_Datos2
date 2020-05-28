@@ -47,7 +47,7 @@ int Socket_C::accept_calls(){
     if(clientSocket == -1){
         std::cerr<<"error connecting to client \n";
         return -4;
-    }close(listening);
+    }
 
     memset(host, 0, NI_MAXHOST);
     memset(svc, 0, NI_MAXSERV);

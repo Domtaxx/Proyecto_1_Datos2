@@ -6,6 +6,7 @@
 class vsptrNT{
 public:
     int id;
+    int localID;
     vsptrNT(int _id){
         id = _id;
     };
