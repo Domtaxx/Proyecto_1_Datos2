@@ -14,7 +14,6 @@
 #include "socket.hpp"
 
 using namespace rapidjson;
-bool* server_on = new bool(false);
 
 extern "C" int main(){
     Socket_C socket = Socket_C();
@@ -63,7 +62,6 @@ extern "C" int main(){
     socket.accept_calls();
 
     //GarbageCollector::getGarbageCollector()->delete_pkgs();
-    delete server_on;
 
     return 0;
 }
