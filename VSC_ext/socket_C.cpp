@@ -1,5 +1,5 @@
-#include "socket_C.h"
-
+#include "socket_C.hpp"
+Socket* Socket_C::remoteSocket = NULL;
 Socket_C::Socket_C(){};
 void Socket_C::set_port(int port){
     hint.sin_family = AF_INET;
@@ -66,6 +66,7 @@ int Socket_C::accept_calls(){
             std::cerr << "Conexión perdida" << std::endl;
             return -5;
         }
+        std::string infoData = string(buf);
         if(buf[0]=='$' && buf[1]=='$'){
             for(int i = 0; i < GarbageCollector::getGarbageCollector()->get_Pkg_List().get_object_counter();i++){
                 package* pack = GarbageCollector::getGarbageCollector()->get_Pkg_List().get_data_by_pos(i);
@@ -94,9 +95,17 @@ int Socket_C::accept_calls(){
                 };
             };
             send(clientSocket, msg.data(), msg.size() ,0);
-        }else if (buf[0]=='@' && buf[1]=='@' && buf[2]=='@'){
+        }
+
+        else if (infoData.substr(0,3)== "true"){
+            std::string datos[5];
+            for(int i=0; i < 5; i++){
+                std::string token = infoData.substr(0,infoData.find(","));
+                datos[i] = token;
+                infoData.erase(0,infoData.find(",")+1);
+            }
             GarbageCollector::server_on = true;
-            Socket_C::remoteSocket = new Socket(54000,"127.0.0.1");
+            Socket_C::remoteSocket = new Socket(std::stoi(datos[4]),datos[3]);
         }
     };
 

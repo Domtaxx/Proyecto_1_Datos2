@@ -22,7 +22,7 @@ public:
     /**
      * Constructor del socket, encargado de iniciarlizar el socket y conectarlo al servidor
     */
-    Socket(int puerto = 54000, std::string ip = "0.0.0.0");
+    Socket(int puerto, std::string ip);
     /**
      * @brief sock
      * Variable que almacena el socket creado en el constructor
@@ -50,6 +50,11 @@ public:
      * Método que finaliza la conexión del socket con el servidor.
      */
     void closeSocket(int socket);
+    /**
+     * Método que permite el singleton al ser el único capaz de acceder al constructor
+     */
+    static Socket getSocket();
+private:
 
 };
 

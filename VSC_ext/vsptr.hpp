@@ -5,7 +5,7 @@
 #include "vsptrNT.hpp"
 #include "garbage.hpp"
 #include "socket.hpp"
-#include "socket_C.h"
+#include "socket_C.hpp"
 
 template<typename T>
 class VSPtr: public vsptrNT{
@@ -17,7 +17,7 @@ private:
         if(GarbageCollector::server_on){
             localId = Socket::vsptr_counter;
             Socket_C::remoteSocket->comunicar("$"+this->ret_Type()+std::to_string(localId));
-            Socket::vsptr_counter = localId+1;
+            //Socket::vsptr_counter = localId+1;
             Socket::vsptr_counter+=1;
         }else{
             id = -1;
@@ -30,7 +30,6 @@ private:
         }
     };
 public:
-
     static VSPtr<T> New(){
         return VSPtr<T>();
     };
@@ -45,7 +44,19 @@ public:
 
     T operator &(){
         if(GarbageCollector::server_on){
-            Socket_C::remoteSocket->comunicar("&"+localId);
+            std::string infoDato = Socket_C::remoteSocket->comunicar("&"+localId);
+            std::string tipo = infoDato.substr(0);
+            if(tipo == "i"){
+                return std::stoi(infoDato.substr(2,infoDato.find("*")));
+            }if(tipo == "l"){
+                return std::stol(infoDato.substr(2,infoDato.find("*")));
+            }if(tipo == "f"){
+                return std::stof(infoDato.substr(2,infoDato.find("*")));
+            }if(tipo == "d"){
+                return std::stod(infoDato.substr(2,infoDato.find("*")));
+            }if(tipo == "c"){
+                return infoDato.c_str()[3];
+            }
         }else{
             return *(dato);
         }

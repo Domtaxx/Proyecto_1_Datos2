@@ -17,7 +17,7 @@ add_executable(VSC_ext
     garbage.hpp
     garbage.cpp
     socket_C.cpp
-    socket_C.h
+    socket_C.hpp
     socket.hpp
     socket.cpp
     )

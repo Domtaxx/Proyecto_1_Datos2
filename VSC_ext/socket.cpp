@@ -16,7 +16,6 @@ Socket::Socket(int puerto, std::string ip){
     inet_pton(AF_INET,ipAdress.c_str(), &hint.sin_addr);
 
     conectar(sock,hint);
-   // return sock;
 
 }
 
