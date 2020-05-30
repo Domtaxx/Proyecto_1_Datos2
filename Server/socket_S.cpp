@@ -30,7 +30,6 @@ int Socket_S::mark_listening(){
     FD_ZERO(&master);
     FD_SET(listening, &master);
 
-
     struct pollfd poll_set[32];
     int numfds = 0;
     int max_fd = 0;
@@ -60,6 +59,7 @@ int Socket_S::mark_listening(){
                     if( bytesIn == 0 ){
                         close(poll_set[i].fd);           
                         poll_set[i].events = 0;
+                        gar_col->get_Vsptr_List()[i-1].clear_list();
                         for(int j = i; j<numfds; j++){
                             poll_set[j] = poll_set[j + 1];
                         }
@@ -69,31 +69,34 @@ int Socket_S::mark_listening(){
                     //crear vsp
                     
                     if(buffer[0] == '$'){    
-                        vsptrNT ptr;
+                        vsptrNT* ptr = nullptr;
                         std::string LocalIdStr = "";
                         for(int a = 2; buffer[a] != '*';a++){
                             LocalIdStr+=buffer[a];
                         }
                         try{
-                            ptr.localID = std::stoi(LocalIdStr);
                             std::cout<<"se creo un ptr"<<std::endl;
                             if(buffer[1] == 'i'){//int
-                                ptr = VSPtr<int>::New();
+                                ptr = VSPtr<int>::New(i-1);
                             }else if(buffer[1] == 'd'){//double
-                                ptr = VSPtr<double>::New();
+                                ptr = VSPtr<double>::New(i-1);
                             }else if(buffer[1] == 'b'){//bool
-                                ptr = VSPtr<bool>::New();
+                                ptr = VSPtr<bool>::New(i-1);
                             }else if(buffer[1] == 'f'){//float
-                                ptr = VSPtr<float>::New();
+                                ptr = VSPtr<float>::New(i-1);
                             }else if(buffer[1] == 'c'){//char
-                                ptr = VSPtr<char>::New();
+                                ptr = VSPtr<char>::New(i-1);
                             }else if(buffer[1] == 'l'){//long
-                                ptr = VSPtr<long>::New();
+                                ptr = VSPtr<long>::New(i-1);
                             }else if(buffer[1] == 'x'){//long long
-                                ptr = VSPtr<long long>::New();
+                                ptr = VSPtr<long long>::New(i-1);
                             }else if(buffer[1] == 'e'){//long double
-                                ptr = VSPtr<long double>::New();
+                                ptr = VSPtr<long double>::New(i-1);
+                            }else{
+                                int var = 1231/0;
                             }
+                            int idTemp = std::stoi(LocalIdStr);
+                            ptr->localID = idTemp;
                             send(poll_set[i].fd,"VSPtr created", sizeof("VSPtr created"), 0);
                         }catch(...){
                             std::cout<<"no se pudo crear un puntero"<<std::endl;
@@ -102,7 +105,7 @@ int Socket_S::mark_listening(){
                            
                     }//asignar valor VSP
                     else if(buffer[0]== '#'){
-                        std::string type_Str = ""+buffer[1];
+                        char type_char = buffer[1];
                         std::string new_Value_Str = "";
                         std::string local_Id_Str = "";
                         int a;
@@ -113,32 +116,32 @@ int Socket_S::mark_listening(){
                             local_Id_Str += buffer[a];
                         }
                         int local_Id_VSPtr = std::stoi(local_Id_Str);
-                        lista<vsptrNT*> list_ptr = gar_col->get_Vsptr_List();
+                        lista<vsptrNT*> list_ptr = gar_col->get_Vsptr_List()[i-1];
                         for(a = 0; a<list_ptr.get_object_counter(); a++){
                             vsptrNT* ptr = list_ptr.get_data_by_pos(a);
                             if(ptr->localID == local_Id_VSPtr){
-                                if(type_Str == "i"){
+                                if(type_char == 'i'){
                                     VSPtr<int>* ptrA = (VSPtr<int>*)ptr; 
                                     *ptrA = std::stoi(new_Value_Str);
-                                }else if(type_Str == "d"){
+                                }else if(type_char == 'd'){
                                     VSPtr<double>* ptrA = (VSPtr<double>*)ptr; 
                                     *ptrA = std::stod(new_Value_Str);
-                                }else if(type_Str == "f"){
+                                }else if(type_char == 'f'){
                                     VSPtr<float>* ptrA = (VSPtr<float>*)ptr; 
                                     *ptrA = std::stof(new_Value_Str);
-                                }else if(type_Str == "c"){
+                                }else if(type_char == 'c'){
                                     VSPtr<char>* ptrA = (VSPtr<char>*)ptr; 
                                     *ptrA = (new_Value_Str).c_str()[0];
-                                }else if(type_Str == "b"){
+                                }else if(type_char == 'b'){
                                     VSPtr<bool>* ptrA = (VSPtr<bool>*)ptr; 
                                     *ptrA = std::stoi(new_Value_Str);
-                                }else if(type_Str == "l"){
+                                }else if(type_char == 'l'){
                                     VSPtr<long>* ptrA = (VSPtr<long>*)ptr; 
                                     *ptrA = std::stol(new_Value_Str);
-                                }else if(type_Str == "x"){
+                                }else if(type_char == 'x'){
                                     VSPtr<long long>* ptrA = (VSPtr<long long>*)ptr; 
                                     *ptrA = std::stoll(new_Value_Str);
-                                }else if(type_Str == "e"){
+                                }else if(type_char == 'e'){
                                     VSPtr<long double>* ptrA = (VSPtr<long double>*)ptr; 
                                     *ptrA = std::stold(new_Value_Str);
                                 }
@@ -154,7 +157,7 @@ int Socket_S::mark_listening(){
                             local_Id_Str += buffer[a];
                         }
                         local_Id_VSPtr = std::stoi(local_Id_Str);
-                        lista<vsptrNT*> list_ptr = gar_col->get_Vsptr_List();
+                        lista<vsptrNT*> list_ptr = gar_col->get_Vsptr_List()[i-1];
                         lista<package*> list_pkg = gar_col->get_Pkg_List();
 
                         for(int a = 0; a<list_ptr.get_object_counter(); a++){
@@ -176,7 +179,19 @@ int Socket_S::mark_listening(){
                         send(poll_set[i].fd,msg.c_str(), sizeof(msg.c_str()),0);
                     }//borrar valor
                     else if(buffer[0]== '~'){
-                        
+                        std::string local_Id_Str = "";
+                        for(int a = 1; buffer[a] != '*'; a++){
+                            local_Id_Str += buffer[a];
+                        }
+                        lista<vsptrNT*> list_ptr = gar_col->get_Vsptr_List()[i-1];
+                        int local_Id_VSPtr = std::stoi(local_Id_Str);
+                        for(int a = 0; a<list_ptr.get_object_counter(); a++){
+                            vsptrNT* ptr = list_ptr.get_data_by_pos(a);
+                            if(ptr->localID == local_Id_VSPtr){
+                                delete ptr;
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -185,7 +200,7 @@ int Socket_S::mark_listening(){
 };
 
 
-std::string Socket_S::data_GC(){
+std::string Socket_S::data_GC(int client){
     std::string msg;
     for(int i = 0; i < GarbageCollector::getGarbageCollector()->get_Pkg_List().get_object_counter();i++){
             package* pack = GarbageCollector::getGarbageCollector()->get_Pkg_List().get_data_by_pos(i);
@@ -201,13 +216,13 @@ std::string Socket_S::data_GC(){
                 msg+= ".";
             };
     };
-    for(int i = 0; i < GarbageCollector::getGarbageCollector()->get_Vsptr_List().get_object_counter();i++){
-        vsptrNT* ptr = GarbageCollector::getGarbageCollector()->get_Vsptr_List().get_data_by_pos(i);
+    for(int i = 0; i < GarbageCollector::getGarbageCollector()->get_Vsptr_List()[client].get_object_counter();i++){
+        vsptrNT* ptr = GarbageCollector::getGarbageCollector()->get_Vsptr_List()[client].get_data_by_pos(i);
         std::string id = ptr->ret_Id().c_str();
         std::string type = ptr->ret_Type().c_str();
         std::string value = ptr->ret_Val().c_str();
         msg += id +","+ type + ","+ value;
-        if((i+1) == GarbageCollector::getGarbageCollector()->get_Vsptr_List().get_object_counter()){
+        if((i+1) == GarbageCollector::getGarbageCollector()->get_Vsptr_List()[client].get_object_counter()){
             msg+= ";";
         }else{
             msg+= ".";

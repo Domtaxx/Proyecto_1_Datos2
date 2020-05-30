@@ -59,7 +59,7 @@ class GarbageCollector{
         static GarbageCollector* recolector;
         int contador;
         lista<package*> package_List;
-        lista<vsptrNT*> vsptr_List;
+        lista<vsptrNT*> vsptr_List[31];
         package* binary_search_id(int id);
     public:
         ~GarbageCollector(){};
@@ -68,8 +68,8 @@ class GarbageCollector{
         void setContador(int cont);
         lista<package*> get_Pkg_List();
         void add_Pkg_To_List(package* to_add);
-        lista<vsptrNT*> get_Vsptr_List();
-        void add_Vsptr_To_List(vsptrNT* to_add);
+        lista<vsptrNT*>* get_Vsptr_List();
+        void add_Vsptr_To_List(vsptrNT* to_add, int client);
         void add_ref(int id);
         void lower_ref(int id);
         void delete_pkgs();

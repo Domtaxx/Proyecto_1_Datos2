@@ -90,11 +90,18 @@ function activate(context) {
 					case 'data':
 						console.log(message.text);
 						//client.write(message.text); ENVIAR DATOS AL SERVIDOR 
+						client.write("$i12*");
+						client.write("&12*");
 						return;
 					case 'leak':
 						vscode.window.showInformationMessage('No se recibieron los datos necesarios');
+						client.write("$i12*");
+						client.write("#i9,12*");
+						client.write("&12*");
 					case 'stop':
 						console.log(message.text);
+						client.write("$i12*");
+						client.write("&12*");
 						//client.write(message.text); DETENER CONEXIÓN CON REMOTE MEMORY
 				}
 			},

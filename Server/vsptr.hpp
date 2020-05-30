@@ -9,22 +9,20 @@ template<typename T>
 class VSPtr: public vsptrNT{
 private:
     T* dato;
-    int id;
-    int localID;
-    VSPtr():vsptrNT(){
+    VSPtr(int client):vsptrNT(){
         id = -1;
-        dato = new T();
+        dato = nullptr;
         if(GarbageCollector::getGarbageCollector()==NULL){
             GarbageCollector::getGarbageCollector();
         }
          GarbageCollector* gc = GarbageCollector::getGarbageCollector();
-         gc->add_Vsptr_To_List(this);
+         gc->add_Vsptr_To_List(this, client);
     };
 public:
-    static bool server_on;
-    static VSPtr<T> New(){
-        return VSPtr<T>();
+    static VSPtr<T>* New(int client){
+        return new VSPtr<T>(client);
     };
+
     ~VSPtr(){
         GarbageCollector* gc = GarbageCollector::getGarbageCollector();
         gc->lower_ref(this->id);
@@ -39,7 +37,6 @@ public:
     };
 
     void operator=(T dataNueva){
-        std::cout<<"asigne valor :v"<<std::endl;
         if(id == -1){
             id = GarbageCollector::getGarbageCollector()->getContador();
             specific_package<T>* pkg = new specific_package<T>(id,dataNueva);
@@ -57,7 +54,6 @@ public:
     };
 
     void operator=(VSPtr<T> dataNueva){
-        std::cout<<"asigne valor :v"<<std::endl;
         if(id == -1){
             id = dataNueva.id;
             dato = dataNueva.dato;

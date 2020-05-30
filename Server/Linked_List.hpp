@@ -214,6 +214,14 @@ class lista{
                return false;
            }
         };
+        /**
+         * @brief clears list, deletes everything
+         */
+        void clear_list(){
+            for(int i = object_counter-1; i>=0; i--){
+                deleteNode(get_node_by_pos(i));
+            }
+        };
 
 };
 #endif //

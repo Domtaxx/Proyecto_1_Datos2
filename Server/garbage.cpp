@@ -5,7 +5,9 @@ GarbageCollector* GarbageCollector::recolector = NULL;
 GarbageCollector::GarbageCollector(){
     recolector = NULL;
     contador = 0;
-    this->vsptr_List = lista<vsptrNT*>();
+    for(int i = 0;i<31;i++){
+        vsptr_List[i] = lista<vsptrNT*>();
+    }
     this->package_List = lista<package*>();
 };
 
@@ -35,12 +37,12 @@ void GarbageCollector::add_Pkg_To_List(package* to_add){
     ;
 };
 
-lista<vsptrNT*> GarbageCollector::get_Vsptr_List(){
+lista<vsptrNT*>* GarbageCollector::get_Vsptr_List(){
     return vsptr_List;
 };
 
-void GarbageCollector::add_Vsptr_To_List(vsptrNT* to_add){
-    vsptr_List.insert(to_add);
+void GarbageCollector::add_Vsptr_To_List(vsptrNT* to_add, int client){
+    vsptr_List[client].insert(to_add);
 };
 
 void GarbageCollector::add_ref(int id){
@@ -97,11 +99,12 @@ void GarbageCollector::delete_pkgs(){
                 package_List.delete_by_pos(i);
                 i--;
             }
-        }for(int i = 0; i<this->vsptr_List.get_object_counter(); i++){
-            if(vsptr_List.get_data_by_pos(i)==nullptr){
-                vsptr_List.delete_by_pos(i);
+        }for(int a = 0; a<31;a++){
+            for(int i = 0; i<this->vsptr_List[a].get_object_counter(); i++){
+                if(vsptr_List[a].get_data_by_pos(i)==nullptr){
+                    vsptr_List[a].delete_by_pos(i);
+                }
             }
         }
-
 };
 
