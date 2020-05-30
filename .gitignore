@@ -168,3 +168,5 @@ build-VSC_ext-Desktop-Debug/qtcsettings.cmake
 build-VSC_ext-Desktop-Debug/
 
 proyecto 1 datos 2.code-workspace
+
+Server/.idea/
