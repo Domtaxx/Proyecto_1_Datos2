@@ -9,6 +9,7 @@ void Socket_S::set_port(int port, std::string ip){
 };
 
 int Socket_S::start(int _port, std::string _ip){
+    gar_col = GarbageCollector::getGarbageCollector();
     listening = socket(AF_INET, SOCK_STREAM, 0);
     if(listening == -1){
         std::cerr<<"could not creat socket \n";
@@ -112,10 +113,66 @@ int Socket_S::mark_listening(){
                             local_Id_Str += buffer[a];
                         }
                         int local_Id_VSPtr = std::stoi(local_Id_Str);
-                        
+                        lista<vsptrNT*> list_ptr = gar_col->get_Vsptr_List();
+                        for(a = 0; a<list_ptr.get_object_counter(); a++){
+                            vsptrNT* ptr = list_ptr.get_data_by_pos(a);
+                            if(ptr->localID == local_Id_VSPtr){
+                                if(type_Str == "i"){
+                                    VSPtr<int>* ptrA = (VSPtr<int>*)ptr; 
+                                    *ptrA = std::stoi(new_Value_Str);
+                                }else if(type_Str == "d"){
+                                    VSPtr<double>* ptrA = (VSPtr<double>*)ptr; 
+                                    *ptrA = std::stod(new_Value_Str);
+                                }else if(type_Str == "f"){
+                                    VSPtr<float>* ptrA = (VSPtr<float>*)ptr; 
+                                    *ptrA = std::stof(new_Value_Str);
+                                }else if(type_Str == "c"){
+                                    VSPtr<char>* ptrA = (VSPtr<char>*)ptr; 
+                                    *ptrA = (new_Value_Str).c_str()[0];
+                                }else if(type_Str == "b"){
+                                    VSPtr<bool>* ptrA = (VSPtr<bool>*)ptr; 
+                                    *ptrA = std::stoi(new_Value_Str);
+                                }else if(type_Str == "l"){
+                                    VSPtr<long>* ptrA = (VSPtr<long>*)ptr; 
+                                    *ptrA = std::stol(new_Value_Str);
+                                }else if(type_Str == "x"){
+                                    VSPtr<long long>* ptrA = (VSPtr<long long>*)ptr; 
+                                    *ptrA = std::stoll(new_Value_Str);
+                                }else if(type_Str == "e"){
+                                    VSPtr<long double>* ptrA = (VSPtr<long double>*)ptr; 
+                                    *ptrA = std::stold(new_Value_Str);
+                                }
+                            }
+                        }
                     }//devolver valor dentro del VSPtr(&)
                     else if(buffer[0]== '&'){
-                            
+                        int pkg_id = -81;
+                        int local_Id_VSPtr = -97;
+                        std::string msg = "";
+                        for(int a = 1; buffer[a] != '*'; a++){
+                            local_Id_Str += buffer[a];
+                        }
+                        local_Id_VSPtr = std::stoi(local_Id_Str);
+                        lista<vsptrNT*> list_ptr = gar_col->get_Vsptr_List();
+                        lista<package*> list_pkg = gar_col->get_Pkg_List();
+
+                        for(int a = 0; a<list_ptr.get_object_counter(); a++){
+                            vsptrNT* ptr = list_ptr.get_data_by_pos(a);
+                            if(ptr->localID == local_Id_VSPtr){
+                                msg+= ptr->ret_Type()+",";
+                                pkg_id = ptr->id;
+                                break;
+                            }
+                        }
+                        
+                        for(int a = 0; a<list_pkg.get_object_counter(); a++){
+                            package* pkg = list_ptr.get_data_by_pos(a);
+                            if(pkg.id == pkg_id){
+                                msg+=pkg.ret_Val()+"*";
+                                break;
+                            }
+                        }
+                        send(poll_set[i].fd,msg.c_str(), sizeof(msg.c_str()),0);
                     }//borrar valor
                     else if(buffer[0]== '~'){
                         
