@@ -9,8 +9,9 @@
 #include "md5.h"
 int main(){
     GarbageCollector* gc = GarbageCollector::getGarbageCollector();
-    std::cout << "md5 of 'grape': " << md5("grape") << std::endl;
-
+    //std::cout << "md5 of 'grape': " << md5("grape") << std::endl;
     //Socket_S socket = Socket_S();
     //socket.start();
+    bool num = 231;
+    std::cout << num << std::endl;
 }

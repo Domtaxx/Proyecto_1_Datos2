@@ -39,6 +39,7 @@ public:
     };
 
     void operator=(T dataNueva){
+        std::cout<<"asigne valor :v"<<std::endl;
         if(id == -1){
             id = GarbageCollector::getGarbageCollector()->getContador();
             specific_package<T>* pkg = new specific_package<T>(id,dataNueva);
@@ -56,7 +57,7 @@ public:
     };
 
     void operator=(VSPtr<T> dataNueva){
-
+        std::cout<<"asigne valor :v"<<std::endl;
         if(id == -1){
             id = dataNueva.id;
             dato = dataNueva.dato;

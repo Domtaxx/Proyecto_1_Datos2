@@ -23,6 +23,7 @@ private:
     char host[NI_MAXHOST];
     char svc[NI_MAXSERV];
     bool end = false;
+    GarbageCollector* gar_col;
 public:
     /**
      * @brief Socket_S constructor
