@@ -10,13 +10,13 @@
 #include "include/rapidjson/stringbuffer.h"
 #include "include/rapidjson/ostreamwrapper.h"
 #include <fstream>
-#include "socket_C.h"
+#include "socket_C.hpp"
 #include "socket.hpp"
 
 using namespace rapidjson;
 
 extern "C" int main(){
-    Socket_C socket = Socket_C();
+    //Socket_C socket = Socket_C();
 
 
     //std::string  p = GarbageCollector::getGarbageCollector()->get_Pkg_List().get_data_by_pos(0)->ret_Val();
@@ -47,7 +47,7 @@ extern "C" int main(){
         }
     std::cout<<(root["angle z"].GetInt())<<::std::endl;
     */
-    std::cout<<"jaja"<<::std::endl;
+    /*std::cout<<"jaja"<<::std::endl;
     VSPtr<int> ptr = VSPtr<int>::New();
     ptr = 5;
     VSPtr<int> ptr1 = VSPtr<int>::New();
@@ -61,7 +61,6 @@ extern "C" int main(){
     socket.start();
     socket.accept_calls();
 
-    //GarbageCollector::getGarbageCollector()->delete_pkgs();
-
+    //GarbageCollector::getGarbageCollector()->delete_pkgs();*/;
     return 0;
 }

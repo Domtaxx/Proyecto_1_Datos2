@@ -104,8 +104,18 @@ int Socket_C::accept_calls(){
                 datos[i] = token;
                 infoData.erase(0,infoData.find(",")+1);
             }
-            GarbageCollector::server_on = true;
+
             Socket_C::remoteSocket = new Socket(std::stoi(datos[4]),datos[3]);
+            std::string result = Socket_C::remoteSocket->comunicar("¬,"+datos[1]+","+datos[2]+"*");
+            if(result == "error"){
+                Socket_C::remoteSocket->closeSocket();
+                std::string msg = "error";
+                send(clientSocket,msg.data(),msg.size(),0);
+            }if(result == "success"){
+                std::string msg = "success";
+                send(clientSocket,msg.data(),msg.size(),0);
+                GarbageCollector::server_on = true;
+            }
         }
     };
 

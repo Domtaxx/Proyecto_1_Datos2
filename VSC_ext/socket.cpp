@@ -47,6 +47,6 @@ string Socket::comunicar(string userInput){
 }
 
 
-void Socket::closeSocket(int sock){
+void Socket::closeSocket(){
     close(sock);
 }

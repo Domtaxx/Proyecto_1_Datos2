@@ -49,7 +49,7 @@ public:
      * @param socket
      * Método que finaliza la conexión del socket con el servidor.
      */
-    void closeSocket(int socket);
+    void closeSocket();
     /**
      * Método que permite el singleton al ser el único capaz de acceder al constructor
      */

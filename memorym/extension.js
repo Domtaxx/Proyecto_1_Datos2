@@ -34,7 +34,6 @@ function activate(context) {
 		client.on('connect', function() {
 		var id = this.localAddress + ': ' + this.localPort;
 		console.log('Client connected', id);
-		client.write("$i")
 		});
 
 		
@@ -50,24 +49,29 @@ function activate(context) {
 		client.on('data', function (data) {
 			datos = ''+data;
 			console.log('Received: '+ data);
+			if(datos == "error"){
+				vscode.window.showInformationMessage("Error: no se logró crear la conexión");
+			}if(datos == "success"){
+				vscode.window.showInformationMessage("Se logró crear la conexión con el servidor");
+			}else{
+				var valores = datos.split(',');
+				if(valores[0]== "0"){
+					htmlText+=`<p>Variable `+valores[1].toString() + `</p> 
+					<p style="padding-left: 30px;">Tipo: `+valores[2]+
+					`<br />Valor: ` +valores[3]+
+					`<br />Celda de memoria: ` +valores[4]+
+					`<br />Referencias actuales: ` +valores[5]+`</p>`;
+				}else if(valores[0] == "1"){
+					htmlText+=`<p>Puntero `+valores[1].toString() + `</p> 
+					<p style="padding-left: 30px;">Id: `+valores[1]+
+					`<br />Tipo: ` +valores[2]+
+					`<br />Valor: ` +valores[3]+`</p>`;
+				}else if(datos.endsWith(";")){
 
-			var valores = datos.split(',');
-			if(valores[0]== "0"){
-				htmlText+=`<p>Variable `+valores[1].toString() + `</p> 
-				<p style="padding-left: 30px;">Tipo: `+valores[2]+
-				`<br />Valor: ` +valores[3]+
-				`<br />Celda de memoria: ` +valores[4]+
-				`<br />Referencias actuales: ` +valores[5]+`</p>`;
-			}else if(valores[0] == "1"){
-				htmlText+=`<p>Puntero `+valores[1].toString() + `</p> 
-				<p style="padding-left: 30px;">Id: `+valores[1]+
-				`<br />Tipo: ` +valores[2]+
-				`<br />Valor: ` +valores[3]+`</p>`;
-			}else if(datos.endsWith(";")){
-
-				htmlText += `</body>
-							</html>`;
-				panel.webview.html = htmlText;
+					htmlText += `</body>
+								</html>`;
+					panel.webview.html = htmlText;
+				}
 			}
 		});
 
@@ -106,7 +110,7 @@ function activate(context) {
 }
 exports.activate = activate;
 
-//FALTA INCORPORAR FUNCIÓN RESET
+//FALTA INCORPORARA FUNCIÓN RESET
 const serverInfo = `<!DOCTYPE html> 
 <html lang="en">
 <head>
