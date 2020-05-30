@@ -149,6 +149,7 @@ int Socket_S::mark_listening(){
                         int pkg_id = -81;
                         int local_Id_VSPtr = -97;
                         std::string msg = "";
+                        std::string local_Id_Str = "";
                         for(int a = 1; buffer[a] != '*'; a++){
                             local_Id_Str += buffer[a];
                         }
@@ -166,9 +167,9 @@ int Socket_S::mark_listening(){
                         }
                         
                         for(int a = 0; a<list_pkg.get_object_counter(); a++){
-                            package* pkg = list_ptr.get_data_by_pos(a);
-                            if(pkg.id == pkg_id){
-                                msg+=pkg.ret_Val()+"*";
+                            package* pkg = list_pkg.get_data_by_pos(a);
+                            if(pkg->id == pkg_id){
+                                msg+=pkg->ret_Val()+"*";
                                 break;
                             }
                         }
