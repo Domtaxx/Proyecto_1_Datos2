@@ -24,6 +24,8 @@ private:
     char svc[NI_MAXSERV];
     bool end = false;
     GarbageCollector* gar_col;
+    vsptrNT* createVSPtr(char type, int client, int local_id);
+    static void give_VSPtr_New_Value(char type, const std::string& new_val, vsptrNT* ptr);
 public:
     /**
      * @brief Socket_S constructor

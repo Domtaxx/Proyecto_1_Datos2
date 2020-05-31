@@ -32,12 +32,10 @@ int Socket_S::mark_listening(){
 
     struct pollfd poll_set[32];
     int numfds = 0;
-    int max_fd = 0;
     memset(poll_set, '\0', sizeof(poll_set));
     poll_set[0].fd = listening;
     poll_set[0].events = POLLIN;
     numfds++;
-    max_fd = listening;
 
 
     
@@ -45,7 +43,6 @@ int Socket_S::mark_listening(){
         poll(poll_set, numfds, -1);
         for(int i = 0; i < numfds; i++){
             if( poll_set[i].revents & POLLIN){
-                //int sock = copy_master.fd_array[i];
                 if(poll_set[i].fd == listening){
                     int clientSock = accept(listening, (sockaddr*)&client, &client_Size);
                     poll_set[numfds].fd = clientSock;
@@ -68,35 +65,13 @@ int Socket_S::mark_listening(){
                     }
                     //crear vsp
                     
-                    if(buffer[0] == '$'){    
-                        vsptrNT* ptr = nullptr;
-                        std::string LocalIdStr = "";
+                    if(buffer[0] == '$'){
+                        std::string LocalIdStr;
                         for(int a = 2; buffer[a] != '*';a++){
                             LocalIdStr+=buffer[a];
                         }
                         try{
-                            std::cout<<"se creo un ptr"<<std::endl;
-                            if(buffer[1] == 'i'){//int
-                                ptr = VSPtr<int>::New(i-1);
-                            }else if(buffer[1] == 'd'){//double
-                                ptr = VSPtr<double>::New(i-1);
-                            }else if(buffer[1] == 'b'){//bool
-                                ptr = VSPtr<bool>::New(i-1);
-                            }else if(buffer[1] == 'f'){//float
-                                ptr = VSPtr<float>::New(i-1);
-                            }else if(buffer[1] == 'c'){//char
-                                ptr = VSPtr<char>::New(i-1);
-                            }else if(buffer[1] == 'l'){//long
-                                ptr = VSPtr<long>::New(i-1);
-                            }else if(buffer[1] == 'x'){//long long
-                                ptr = VSPtr<long long>::New(i-1);
-                            }else if(buffer[1] == 'e'){//long double
-                                ptr = VSPtr<long double>::New(i-1);
-                            }else{
-                                int var = 1231/0;
-                            }
-                            int idTemp = std::stoi(LocalIdStr);
-                            ptr->localID = idTemp;
+                            createVSPtr(buffer[1], i-1,std::stoi(LocalIdStr));
                             send(poll_set[i].fd,"VSPtr created", sizeof("VSPtr created"), 0);
                         }catch(...){
                             std::cout<<"no se pudo crear un puntero"<<std::endl;
@@ -105,52 +80,33 @@ int Socket_S::mark_listening(){
                            
                     }//asignar valor VSP
                     else if(buffer[0]== '#'){
-                        char type_char = buffer[1];
-                        std::string new_Value_Str = "";
-                        std::string local_Id_Str = "";
+                        lista<vsptrNT*> list_ptr = gar_col->get_Vsptr_List()[i-1];
+                        std::string new_Value_Str;
+                        std::string local_Id_Str;
                         int a;
+
                         for(a = 2; buffer[a] != ',';a++){
                             new_Value_Str+=buffer[a];
-                        }a++;
+                        }
+
+                        a++;
+
                         for(a; buffer[a] != '*'; a++){
                             local_Id_Str += buffer[a];
-                        }
-                        int local_Id_VSPtr = std::stoi(local_Id_Str);
-                        lista<vsptrNT*> list_ptr = gar_col->get_Vsptr_List()[i-1];
+                        }int local_Id_VSPtr = std::stoi(local_Id_Str);
+
                         for(a = 0; a<list_ptr.get_object_counter(); a++){
                             vsptrNT* ptr = list_ptr.get_data_by_pos(a);
                             if(ptr->localID == local_Id_VSPtr){
-                                if(type_char == 'i'){
-                                    VSPtr<int>* ptrA = (VSPtr<int>*)ptr; 
-                                    *ptrA = std::stoi(new_Value_Str);
-                                }else if(type_char == 'd'){
-                                    VSPtr<double>* ptrA = (VSPtr<double>*)ptr; 
-                                    *ptrA = std::stod(new_Value_Str);
-                                }else if(type_char == 'f'){
-                                    VSPtr<float>* ptrA = (VSPtr<float>*)ptr; 
-                                    *ptrA = std::stof(new_Value_Str);
-                                }else if(type_char == 'c'){
-                                    VSPtr<char>* ptrA = (VSPtr<char>*)ptr; 
-                                    *ptrA = (new_Value_Str).c_str()[0];
-                                }else if(type_char == 'b'){
-                                    VSPtr<bool>* ptrA = (VSPtr<bool>*)ptr; 
-                                    *ptrA = std::stoi(new_Value_Str);
-                                }else if(type_char == 'l'){
-                                    VSPtr<long>* ptrA = (VSPtr<long>*)ptr; 
-                                    *ptrA = std::stol(new_Value_Str);
-                                }else if(type_char == 'x'){
-                                    VSPtr<long long>* ptrA = (VSPtr<long long>*)ptr; 
-                                    *ptrA = std::stoll(new_Value_Str);
-                                }else if(type_char == 'e'){
-                                    VSPtr<long double>* ptrA = (VSPtr<long double>*)ptr; 
-                                    *ptrA = std::stold(new_Value_Str);
-                                }
+                                give_VSPtr_New_Value(buffer[1], new_Value_Str, ptr);
                             }
                         }
                     }//devolver valor dentro del VSPtr(&)
                     else if(buffer[0]== '&'){
+
                         int pkg_id = -81;
                         int local_Id_VSPtr = -97;
+
                         std::string msg = "";
                         std::string local_Id_Str = "";
                         for(int a = 1; buffer[a] != '*'; a++){
@@ -179,7 +135,7 @@ int Socket_S::mark_listening(){
                         send(poll_set[i].fd,msg.c_str(), sizeof(msg.c_str()),0);
                     }//borrar valor
                     else if(buffer[0]== '~'){
-                        std::string local_Id_Str = "";
+                        std::string local_Id_Str;
                         for(int a = 1; buffer[a] != '*'; a++){
                             local_Id_Str += buffer[a];
                         }
@@ -229,4 +185,56 @@ std::string Socket_S::data_GC(int client){
         };
     };
     return msg;
+}
+
+vsptrNT* Socket_S::createVSPtr(char type, int client, int local_id){
+    vsptrNT* ptr = nullptr;
+    if(type == 'i'){//int
+        ptr = VSPtr<int>::New(client);
+    }else if(type == 'd'){//double
+        ptr = VSPtr<double>::New(client);
+    }else if(type == 'b'){//bool
+        ptr = VSPtr<bool>::New(client);
+    }else if(type == 'f'){//float
+        ptr = VSPtr<float>::New(client);
+    }else if(type == 'c'){//char
+        ptr = VSPtr<char>::New(client);
+    }else if(type == 'l'){//long
+        ptr = VSPtr<long>::New(client);
+    }else if(type == 'x'){//long long
+        ptr = VSPtr<long long>::New(client);
+    }else if(type == 'e'){//long double
+        ptr = VSPtr<long double>::New(client);
+    }else{
+        int var = 1231/0;
+    }ptr->localID = local_id;
+    return ptr;
+}
+
+void Socket_S::give_VSPtr_New_Value(char type, const std::string& new_val, vsptrNT* ptr){
+    if(type == 'i'){
+        auto ptrA = (VSPtr<int>*)ptr;
+        *ptrA = std::stoi(new_val);
+    }else if(type == 'd'){
+        auto ptrA = (VSPtr<double>*)ptr;
+        *ptrA = std::stod(new_val);
+    }else if(type == 'f'){
+        auto ptrA = (VSPtr<float>*)ptr;
+        *ptrA = std::stof(new_val);
+    }else if(type == 'c'){
+        auto ptrA = (VSPtr<char>*)ptr;
+        *ptrA = (new_val).c_str()[0];
+    }else if(type == 'b'){
+        auto ptrA = (VSPtr<bool>*)ptr;
+        *ptrA = std::stoi(new_val);
+    }else if(type == 'l'){
+        auto ptrA = (VSPtr<long>*)ptr;
+        *ptrA = std::stol(new_val);
+    }else if(type == 'x'){
+        auto ptrA = (VSPtr<long long>*)ptr;
+        *ptrA = std::stoll(new_val);
+    }else if(type == 'e'){
+        auto ptrA = (VSPtr<long double>*)ptr;
+        *ptrA = std::stold(new_val);
+    }
 }
