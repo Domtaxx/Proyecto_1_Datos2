@@ -6,6 +6,11 @@
 #include "garbage.hpp"
 #include "socket.hpp"
 #include "socket_C.hpp"
+#include "include/rapidjson/document.h"
+#include "include/rapidjson/istreamwrapper.h"
+#include "include/rapidjson/writer.h"
+#include "include/rapidjson/stringbuffer.h"
+#include "include/rapidjson/ostreamwrapper.h"
 
 template<typename T>
 class VSPtr: public vsptrNT{
@@ -16,7 +21,8 @@ private:
     VSPtr():vsptrNT(){
         if(GarbageCollector::server_on){
             localId = Socket::vsptr_counter;
-            Socket_C::remoteSocket->comunicar("$"+this->ret_Type()+std::to_string(localId));
+            std::string msg = "${tipo:"+this->ret_Type()+",localId:"+std::to_string(localId)+"}";
+            Socket_C::remoteSocket->comunicar(msg);
             //Socket::vsptr_counter = localId+1;
             Socket::vsptr_counter+=1;
         }else{
@@ -45,17 +51,20 @@ public:
     T operator &(){
         if(GarbageCollector::server_on){
             std::string infoDato = Socket_C::remoteSocket->comunicar("&"+localId);
-            std::string tipo = infoDato.substr(0);
+            rapidjson::Document document;
+            document.Parse<0>(infoDato.c_str()).HasParseError();
+            std::string tipo = document["tipo"].GetString();
             if(tipo == "i"){
-                return std::stoi(infoDato.substr(2,infoDato.find("*")));
+                return std::stoi(document["dato"].GetString());
             }if(tipo == "l"){
-                return std::stol(infoDato.substr(2,infoDato.find("*")));
+                return std::stol(document["dato"].GetString());
             }if(tipo == "f"){
-                return std::stof(infoDato.substr(2,infoDato.find("*")));
+                return std::stof(document["dato"].GetString());
             }if(tipo == "d"){
-                return std::stod(infoDato.substr(2,infoDato.find("*")));
+                return std::stod(document["dato"].GetString());
             }if(tipo == "c"){
-                return infoDato.c_str()[3];
+                return document["dato"].Get<char>();
+                //return infoDato.c_str()[3];
             }
         }else{
             return *(dato);
@@ -72,8 +81,8 @@ public:
 
     void operator=(T dataNueva){
         if(GarbageCollector::server_on){
-            std::string msg = "#p."+localId;
-            msg += "."+ std::to_string(dataNueva) + ".";
+            std::string msg = "#p{localId:"+localId;
+            msg += ",dato:"+ std::to_string(dataNueva) + "}";
             Socket_C::remoteSocket->comunicar(msg);
         }else{
             if(id == -1){
@@ -95,8 +104,8 @@ public:
 
     void operator=(VSPtr<T> dataNueva){
         if(GarbageCollector::server_on){
-            std::string msg = "#d."+localId;
-            msg += "."+dataNueva.ret_Local_id() +".";
+            std::string msg = "#d{localId:"+localId;
+            msg += ",dato:"+dataNueva.ret_Local_id() +"}";
             Socket_C::remoteSocket->comunicar(msg);
         }else{
             if(id == -1){
