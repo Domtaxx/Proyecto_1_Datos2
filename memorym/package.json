@@ -10,14 +10,14 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:memorym.helloWorld"
+		"onCommand:memorym.memoryManager"
 	],
 	"main": "./extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "memorym.helloWorld",
-				"title": "Hello World"
+				"command": "memorym.memoryManager",
+				"title": "Memory Manager"
 			}
 		]
 	},

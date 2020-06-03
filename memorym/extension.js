@@ -2,6 +2,8 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 const net = require('net');
+const fs = require('fs');
+const path = require('path');
 //const dom = new jsdom.JSDOM(serverDatos());
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -18,23 +20,28 @@ function activate(context) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('memorym.helloWorld', function () {
+	let disposable = vscode.commands.registerCommand('memorym.memoryManager', function () {
 		
 		// The code you place here will be executed every time your command is executed
-
+		
+		const folderPath = vscode.workspace.workspaceFolders[0].uri.toString().split(":")[1];
+		fs.writeFile(path.join(folderPath,"main.cpp"),'#include "vsptr.so"',err=>{
+			if(err){
+				return vscode.window.showErrorMessage("Error creating main file");
+			}
+			vscode.window.showInformationMessage("Everything is fine!");
+		})
 		// Display a message box to the user
-
 
 		var Client = net.createConnection;
 		var client = Client({port: 54000, localAddress: '127.0.0.1', localPort: 51000});
 		var datos = " ";
 		
-		
+
 
 		client.on('connect', function() {
 		var id = this.localAddress + ': ' + this.localPort;
 		console.log('Client connected', id);
-		client.write("$i2342*")
 		});
 
 		
@@ -91,18 +98,11 @@ function activate(context) {
 					case 'data':
 						console.log(message.text);
 						//client.write(message.text); ENVIAR DATOS AL SERVIDOR 
-						client.write("$i12*");
-						client.write("&12*");
 						return;
 					case 'leak':
 						vscode.window.showInformationMessage('No se recibieron los datos necesarios');
-						client.write("$i12*");
-						client.write("#i9,12*");
-						client.write("&12*");
 					case 'stop':
 						console.log(message.text);
-						client.write("$i12*");
-						client.write("&12*");
 						//client.write(message.text); DETENER CONEXIÓN CON REMOTE MEMORY
 				}
 			},
@@ -118,7 +118,6 @@ function activate(context) {
 }
 exports.activate = activate;
 
-//FALTA INCORPORARA FUNCIÓN RESET
 const serverInfo = `<!DOCTYPE html> 
 <html lang="en">
 <head>
