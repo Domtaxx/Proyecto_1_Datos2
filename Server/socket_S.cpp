@@ -7,6 +7,7 @@
 #include "include/rapidjson/stringbuffer.h"
 #include "include/rapidjson/ostreamwrapper.h"
 #include <fstream>
+#include "md5.h"
 Socket_S::Socket_S(){};
 void Socket_S::set_port(int port, std::string ip){
     hint.sin_family = AF_INET;
@@ -75,11 +76,17 @@ int Socket_S::mark_listening(){
                     if(buffer[0] == '$'){
                         if(is_client_arr[i-1]) {
                             std::string LocalIdStr;
-                            for (int a = 2; buffer[a] != '*'; a++) {
-                                LocalIdStr += buffer[a];
-                            }
+                            std::string tipo;
+                            std::string json_str = get_json(buffer);
+                            rapidjson::Document document;
+                            document.Parse<0>(json_str.c_str()).HasParseError();
+                            std::cout<<"sadsd";
+                            LocalIdStr = document["localId"].GetString();
+                            tipo = document["tipo"].GetString();
+                            std::cout<<tipo+"\n";
+                            std::cout<<LocalIdStr+"\n";
                             try {
-                                createVSPtr(buffer[1], i - 1, std::stoi(LocalIdStr));
+                                createVSPtr(tipo.c_str()[0], i - 1, std::stoi(LocalIdStr));
                                 send(poll_set[i].fd, "VSPtr created", sizeof("VSPtr created"), 0);
                             } catch (...) {
                                 std::cout << "no se pudo crear un puntero" << std::endl;
@@ -179,18 +186,19 @@ int Socket_S::mark_listening(){
                         for(h; buffer[h] != '*' ;h++) {
                             password+=buffer[h];
                         }
+                        password = md5(password.c_str());
                         std::ifstream ifs("JSONFiles/prueba.json");
                         rapidjson::IStreamWrapper isw (ifs);
                         rapidjson::Document doc;
                         doc.ParseStream(isw);
-
-                        for(const auto& point : doc["clients"].GetArray()){
+                        is_client_arr[i-1] = true;
+                        /*for(const auto& point : doc["clients"].GetArray()){
                             std::string user = point["usuario"].GetString();
                             std::string pass = point["password"].GetString();
                             if(user==usuario && pass==password){
                                 is_client_arr[i-1] = true;
                             }
-                        }if(is_client_arr[i-1]){
+                        }*/if(is_client_arr[i-1]){
                             send(poll_set[i].fd, "success", sizeof("success"), 0);
                         }else{
                             send(poll_set[i].fd, "error", sizeof("error"), 0);

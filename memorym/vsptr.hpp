@@ -21,7 +21,7 @@ private:
     VSPtr():vsptrNT(){
         if(GarbageCollector::server_on){
             localId = Socket::vsptr_counter;
-            std::string msg = "${tipo:"+this->ret_Type()+",localId:"+std::to_string(localId).c_str()+"}";
+            std::string msg = "${tipo:"+this->ret_Type()+",localId:"+std::to_string(localId)+"}";
             Socket_C::remoteSocket->comunicar(msg);
             //Socket::vsptr_counter = localId+1;
             Socket::vsptr_counter+=1;

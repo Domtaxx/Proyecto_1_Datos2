@@ -1,21 +1,19 @@
-#include <iostream>
 #include "vsptr.hpp"
-#include "garbage.hpp"
-#include <thread>
-#include "pthread.h"
 #include <unistd.h>
-#include "include/rapidjson/document.h"
-#include "include/rapidjson/istreamwrapper.h"
-#include "include/rapidjson/writer.h"
-#include "include/rapidjson/stringbuffer.h"
-#include "include/rapidjson/ostreamwrapper.h"
-#include <fstream>
-#include "socket_C.hpp"
-#include "socket.hpp"
-
+#include "garbage.hpp"
 using namespace rapidjson;
 
-extern "C" int main(){
+bool is_not_finished = true;
+void delete_t(){
+    GarbageCollector* gc = GarbageCollector::getGarbageCollector();
+    while(is_not_finished){
+        gc->delete_pkgs();
+        sleep(10);
+    }
+};
+int main(){
+    std::thread p(delete_t);
+
     //Socket_C socket = Socket_C();
 
 
@@ -59,6 +57,13 @@ extern "C" int main(){
     socket.start();
     socket.accept_calls();
 
-    //GarbageCollector::getGarbageCollector()->delete_pkgs();*/;
+    GarbageCollector::getGarbageCollector()->delete_pkgs();*/;
+    Socket_C::remoteSocket = new Socket(std::stoi("54000"),"0.0.0.0");
+    std::string result = Socket_C::remoteSocket->comunicar("^Bruno Diaz,soyBatman123*");
+    sleep(5);
+    VSPtr<int> ptr1 = VSPtr<int>::New();
+    is_not_finished = false;
+    p.join();
     return 0;
 }
+
