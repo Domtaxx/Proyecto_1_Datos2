@@ -81,7 +81,7 @@ public:
 
     void operator=(T dataNueva){
         if(GarbageCollector::server_on){
-            std::string msg = "#p{localId:"+localId;
+            std::string msg = "#d{localId:"+localId;
             msg += ",dato:"+ std::to_string(dataNueva) + "}";
             Socket_C::remoteSocket->comunicar(msg);
         }else{
@@ -104,7 +104,7 @@ public:
 
     void operator=(VSPtr<T> dataNueva){
         if(GarbageCollector::server_on){
-            std::string msg = "#d{localId:"+localId;
+            std::string msg = "#p{localId:"+localId;
             msg += ",dato:"+dataNueva.ret_Local_id() +"}";
             Socket_C::remoteSocket->comunicar(msg);
         }else{

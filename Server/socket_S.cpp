@@ -47,6 +47,7 @@ int Socket_S::mark_listening(){
     
     while(true){
         poll(poll_set, numfds, -1);
+        bool is_client_arr[32];
         for(int i = 0; i < numfds; i++){
             if( poll_set[i].revents & POLLIN){
                 if(poll_set[i].fd == listening){
@@ -55,11 +56,12 @@ int Socket_S::mark_listening(){
                     poll_set[numfds].events = POLLIN;
                     numfds++;
                     std::cout<<"CONNECTED"<<std::endl;
+                    is_client_arr[i-1]=false;
                 }else{
                     char buffer[4096];
                     memset(buffer, 0, 4096);
                     int bytesIn = recv(poll_set[i].fd, buffer, 4096, 0);
-                    if( bytesIn == 0 ){
+                    if( bytesIn <= 0 ){
                         close(poll_set[i].fd);           
                         poll_set[i].events = 0;
                         gar_col->get_Vsptr_List()[i-1].clear_list();
@@ -71,106 +73,127 @@ int Socket_S::mark_listening(){
                     }
                     //crear vsp
                     if(buffer[0] == '$'){
-                        std::string LocalIdStr;
-                        for(int a = 2; buffer[a] != '*';a++){
-                            LocalIdStr+=buffer[a];
+                        if(is_client_arr[i-1]) {
+                            std::string LocalIdStr;
+                            for (int a = 2; buffer[a] != '*'; a++) {
+                                LocalIdStr += buffer[a];
+                            }
+                            try {
+                                createVSPtr(buffer[1], i - 1, std::stoi(LocalIdStr));
+                                send(poll_set[i].fd, "VSPtr created", sizeof("VSPtr created"), 0);
+                            } catch (...) {
+                                std::cout << "no se pudo crear un puntero" << std::endl;
+                                send(poll_set[i].fd, "Error creating VSPtr", sizeof("Error creating VSPtr"), 0);
+                            }
                         }
-                        try{
-                            createVSPtr(buffer[1], i-1,std::stoi(LocalIdStr));
-                            send(poll_set[i].fd,"VSPtr created", sizeof("VSPtr created"), 0);
-                        }catch(...){
-                            std::cout<<"no se pudo crear un puntero"<<std::endl;
-                            send(poll_set[i].fd,"Error creating VSPtr", sizeof("Error creating VSPtr"),0);
-                        }
-                           
                     }//asignar valor VSP
                     else if(buffer[0]== '#'){
-                        lista<vsptrNT*> list_ptr = gar_col->get_Vsptr_List()[i-1];
-                        std::string new_Value_Str;
-                        std::string local_Id_Str;
-                        int a;
+                        if(is_client_arr[i-1]) {
+                            std::string json_str = get_json(buffer);
+                            rapidjson::Document document;
+                            document.Parse<0>(json_str.c_str()).HasParseError();
+                            int local_Id_VSPtr = std::stoi(document["localId"].GetString());
+                            if (buffer[1] == 'd') { ;
+                                lista<vsptrNT *> list_ptr = gar_col->get_Vsptr_List()[i - 1];
+                                for (int a = 0; a < list_ptr.get_object_counter(); a++) {
+                                    vsptrNT *ptr = list_ptr.get_data_by_pos(a);
+                                    if (ptr->localID == local_Id_VSPtr) {
+                                        char type = ptr->ret_Type().c_str()[0];
+                                        give_VSPtr_New_Value(type, document["dato"].GetString(), ptr);
+                                    }
+                                }
+                            } else if (buffer[1] == 'p') {
+                                int VSP_data_Id = std::stoi(document["data"].GetString());
+                                lista<vsptrNT *> list_ptr = gar_col->get_Vsptr_List()[i - 1];
+                                for (int a = 0; a < list_ptr.get_object_counter(); a++) {
+                                    vsptrNT *ptr = list_ptr.get_data_by_pos(a);
+                                    if (ptr->localID == local_Id_VSPtr) {
 
-                        for(a = 2; buffer[a] != ',';a++){
-                            new_Value_Str+=buffer[a];
-                        }
-
-                        a++;
-
-                        for(a; buffer[a] != '*'; a++){
-                            local_Id_Str += buffer[a];
-                        }int local_Id_VSPtr = std::stoi(local_Id_Str);
-
-                        for(a = 0; a<list_ptr.get_object_counter(); a++){
-                            vsptrNT* ptr = list_ptr.get_data_by_pos(a);
-                            if(ptr->localID == local_Id_VSPtr){
-                                give_VSPtr_New_Value(buffer[1], new_Value_Str, ptr);
+                                        for (int b = 0; a < list_ptr.get_object_counter(); b++) {
+                                            vsptrNT *data_ptr = list_ptr.get_data_by_pos(b);
+                                            if (data_ptr->localID == VSP_data_Id) {
+                                                *ptr = *data_ptr;
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }//devolver valor dentro del VSPtr(&)
                     else if(buffer[0]== '&'){
+                        if(is_client_arr[i-1]) {
+                            int pkg_id = -81;
+                            int local_Id_VSPtr = -97;
 
-                        int pkg_id = -81;
-                        int local_Id_VSPtr = -97;
-
-                        std::string msg = "";
-                        std::string local_Id_Str = "";
-                        for(int a = 1; buffer[a] != '*'; a++){
-                            local_Id_Str += buffer[a];
-                        }
-                        local_Id_VSPtr = std::stoi(local_Id_Str);
-                        lista<vsptrNT*> list_ptr = gar_col->get_Vsptr_List()[i-1];
-                        lista<package*> list_pkg = gar_col->get_Pkg_List();
-
-                        for(int a = 0; a<list_ptr.get_object_counter(); a++){
-                            vsptrNT* ptr = list_ptr.get_data_by_pos(a);
-                            if(ptr->localID == local_Id_VSPtr){
-                                msg+= ptr->ret_Type()+",";
-                                pkg_id = ptr->id;
-                                break;
+                            std::string msg = "{tipo:";
+                            std::string local_Id_Str = "";
+                            for (int a = 1; buffer[a] != '*'; a++) {
+                                local_Id_Str += buffer[a];
                             }
-                        }
-                        
-                        for(int a = 0; a<list_pkg.get_object_counter(); a++){
-                            package* pkg = list_pkg.get_data_by_pos(a);
-                            if(pkg->id == pkg_id){
-                                msg+=pkg->ret_Val()+"*";
-                                break;
+                            local_Id_VSPtr = std::stoi(local_Id_Str);
+                            lista<vsptrNT *> list_ptr = gar_col->get_Vsptr_List()[i - 1];
+                            lista<package *> list_pkg = gar_col->get_Pkg_List();
+
+                            for (int a = 0; a < list_ptr.get_object_counter(); a++) {
+                                vsptrNT *ptr = list_ptr.get_data_by_pos(a);
+                                if (ptr->localID == local_Id_VSPtr) {
+                                    msg += ptr->ret_Type() + ",dato:";
+                                    pkg_id = ptr->id;
+                                    break;
+                                }
                             }
+
+                            for (int a = 0; a < list_pkg.get_object_counter(); a++) {
+                                package *pkg = list_pkg.get_data_by_pos(a);
+                                if (pkg->id == pkg_id) {
+                                    msg += pkg->ret_Val() + "}";
+                                    break;
+                                }
+                            }
+                            send(poll_set[i].fd, msg.c_str(), sizeof(msg.c_str()), 0);
                         }
-                        send(poll_set[i].fd,msg.c_str(), sizeof(msg.c_str()),0);
                     }//borrar valor
                     else if(buffer[0]== '~'){
-                        std::string local_Id_Str;
-                        for(int a = 1; buffer[a] != '*'; a++){
-                            local_Id_Str += buffer[a];
-                        }
-                        lista<vsptrNT*> list_ptr = gar_col->get_Vsptr_List()[i-1];
-                        int local_Id_VSPtr = std::stoi(local_Id_Str);
-                        for(int a = 0; a<list_ptr.get_object_counter(); a++){
-                            vsptrNT* ptr = list_ptr.get_data_by_pos(a);
-                            if(ptr->localID == local_Id_VSPtr){
-                                delete ptr;
-                                break;
+                        if(is_client_arr[i-1]) {
+                            std::string local_Id_Str;
+                            for (int a = 1; buffer[a] != '*'; a++) {
+                                local_Id_Str += buffer[a];
+                            }
+                            lista<vsptrNT *> list_ptr = gar_col->get_Vsptr_List()[i - 1];
+                            int local_Id_VSPtr = std::stoi(local_Id_Str);
+                            for (int a = 0; a < list_ptr.get_object_counter(); a++) {
+                                vsptrNT *ptr = list_ptr.get_data_by_pos(a);
+                                if (ptr->localID == local_Id_VSPtr) {
+                                    delete ptr;
+                                    break;
+                                }
                             }
                         }
                     }else if(buffer[0] == '^'){
+                        std::string usuario;
+                        std::string password;
+                        int h;
+                        for(h = 1; buffer[h] != ',' ;h++) {
+                            usuario+=buffer[h];
+                        }h++;
+                        for(h; buffer[h] != '*' ;h++) {
+                            password+=buffer[h];
+                        }
                         std::ifstream ifs("JSONFiles/prueba.json");
                         rapidjson::IStreamWrapper isw (ifs);
-                        rapidjson::Document root;
-                        root.ParseStream(isw);
-                        rapidjson::StringBuffer buffer;
-                        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-                        root.Accept(writer);
-                        std::string jsonStr(buffer.GetString());
-                        if(jsonStr == "null"){
-                            std::cout << "is null..." << std::endl; //<--always here!
+                        rapidjson::Document doc;
+                        doc.ParseStream(isw);
+
+                        for(const auto& point : doc["clients"].GetArray()){
+                            std::string user = point["usuario"].GetString();
+                            std::string pass = point["password"].GetString();
+                            if(user==usuario && pass==password){
+                                is_client_arr[i-1] = true;
+                            }
+                        }if(is_client_arr[i-1]){
+                            send(poll_set[i].fd, "success", sizeof("success"), 0);
                         }else{
-                            std::cout << jsonStr.c_str() << std::endl;
-                            root["ip"] = "pito";
-                            std::ofstream ofs("JSONFiles/prueba.json");
-                            rapidjson::OStreamWrapper osw(ofs);
-                            rapidjson::Writer<rapidjson::OStreamWrapper> writer2(osw);
-                            root.Accept(writer2);
+                            send(poll_set[i].fd, "error", sizeof("error"), 0);
                         }
                     }
                 }
@@ -261,4 +284,17 @@ void Socket_S::give_VSPtr_New_Value(char type, const std::string& new_val, vsptr
         auto ptrA = (VSPtr<long double>*)ptr;
         *ptrA = std::stold(new_val);
     }
+}
+
+std::string Socket_S::get_json(char* buffer){
+    std::string json_str;
+    int a = 0;
+    while(buffer[a] != '{'){
+        a++;
+    }
+    for (a; buffer[a] != '}'; a++) {
+        json_str += buffer[a];
+    }json_str += '}';
+    return json_str;
+
 }

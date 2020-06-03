@@ -106,7 +106,7 @@ int Socket_C::accept_calls(){
             }
 
             Socket_C::remoteSocket = new Socket(std::stoi(datos[4]),datos[3]);
-            std::string result = Socket_C::remoteSocket->comunicar("¬,"+datos[1]+","+datos[2]+"*");
+            std::string result = Socket_C::remoteSocket->comunicar("^,"+datos[1]+","+datos[2]+"*");
             if(result == "error"){
                 Socket_C::remoteSocket->closeSocket();
                 std::string msg = "error";

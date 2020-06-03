@@ -54,6 +54,7 @@ public:
     };
 
     void operator=(VSPtr<T> dataNueva){
+        std::cout<<"pito"<<std::endl;
         if(id == -1){
             id = dataNueva.id;
             dato = dataNueva.dato;
