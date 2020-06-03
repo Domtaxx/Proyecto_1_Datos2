@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 GarbageCollector* GarbageCollector::recolector = NULL;
-bool GarbageCollector::server_on = true;
+bool GarbageCollector::server_on = false;
 GarbageCollector::GarbageCollector(){
     recolector = NULL;
     contador = 0;

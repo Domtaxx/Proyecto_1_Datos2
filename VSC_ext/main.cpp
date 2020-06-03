@@ -12,7 +12,7 @@ void delete_t(){
     }
 };
 int main(){
-    std::thread p(delete_t);
+    //std::thread p(delete_t);
 
     //Socket_C socket = Socket_C();
 
@@ -58,12 +58,16 @@ int main(){
     socket.accept_calls();
 
     GarbageCollector::getGarbageCollector()->delete_pkgs();*/;
-    Socket_C::remoteSocket = new Socket(std::stoi("54000"),"0.0.0.0");
-    std::string result = Socket_C::remoteSocket->comunicar("^Bruno Diaz,soyBatman123*");
-    sleep(5);
+    //Socket_C::remoteSocket = new Socket(std::stoi("54000"),"0.0.0.0");
+    //std::string result = Socket_C::remoteSocket->comunicar("^Bruno Diaz,soyBatman123*");
+    //sleep(5);
     VSPtr<int> ptr1 = VSPtr<int>::New();
-    is_not_finished = false;
-    p.join();
+    std::string msg = "{ \"tipo\" : \""+ptr1.ret_Type()+"\",\"localId\" : \""+ptr1.ret_Local_id()+"\"}";
+    Document document;
+    document.Parse<0>(msg.c_str());
+    std::cout << document["tipo"].GetString();
+    //is_not_finished = false;
+    //p.join();
     return 0;
 }
 

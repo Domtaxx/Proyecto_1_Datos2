@@ -21,7 +21,7 @@ private:
     VSPtr():vsptrNT(){
         if(GarbageCollector::server_on){
             localId = Socket::vsptr_counter;
-            std::string msg = "${tipo:"+this->ret_Type()+",localId:"+std::to_string(localId).c_str()+"}";
+            std::string msg = "${ \"tipo\" : \""+this->ret_Type()+"\",\"localId\" : \""+std::to_string(localId)+"\"}";
             Socket_C::remoteSocket->comunicar(msg);
             //Socket::vsptr_counter = localId+1;
             Socket::vsptr_counter+=1;
@@ -81,8 +81,9 @@ public:
 
     void operator=(T dataNueva){
         if(GarbageCollector::server_on){
-            std::string msg = "#d{localId:"+localId;
-            msg += ",dato:"+ std::to_string(dataNueva) + "}";
+            std::string msg = "#d{ \"localId\" : \""+std::to_string(localId)+"\",\"dato\" : \""+std::to_string(dataNueva)+"\"}";
+            //std::string msg = "#d{localId:"+localId;
+            //msg += ",dato:"+ std::to_string(dataNueva) + "}";
             Socket_C::remoteSocket->comunicar(msg);
         }else{
             if(id == -1){
@@ -104,8 +105,9 @@ public:
 
     void operator=(VSPtr<T> dataNueva){
         if(GarbageCollector::server_on){
-            std::string msg = "#p{localId:"+localId;
-            msg += ",dato:"+dataNueva.ret_Local_id() +"}";
+            std::string msg = "#p{ \"localId\" : \""+std::to_string(localId)+"\",\"dato\" : \""+dataNueva.ret_Local_Id()+"\"}";
+            //std::string msg = "#p{localId:"+localId;
+            //msg += ",dato:"+dataNueva.ret_Local_id() +"}";
             Socket_C::remoteSocket->comunicar(msg);
         }else{
             if(id == -1){
