@@ -1,6 +1,12 @@
 #include "socket_S.h"
 #include <climits>
 #include <poll.h>
+#include "include/rapidjson/document.h"
+#include "include/rapidjson/istreamwrapper.h"
+#include "include/rapidjson/writer.h"
+#include "include/rapidjson/stringbuffer.h"
+#include "include/rapidjson/ostreamwrapper.h"
+#include <fstream>
 Socket_S::Socket_S(){};
 void Socket_S::set_port(int port, std::string ip){
     hint.sin_family = AF_INET;
@@ -64,7 +70,6 @@ int Socket_S::mark_listening(){
                         std::cout<<"se elimina un cliente"<<std::endl;
                     }
                     //crear vsp
-                    
                     if(buffer[0] == '$'){
                         std::string LocalIdStr;
                         for(int a = 2; buffer[a] != '*';a++){
@@ -147,6 +152,25 @@ int Socket_S::mark_listening(){
                                 delete ptr;
                                 break;
                             }
+                        }
+                    }else if(buffer[0] == '^'){
+                        std::ifstream ifs("JSONFiles/prueba.json");
+                        rapidjson::IStreamWrapper isw (ifs);
+                        rapidjson::Document root;
+                        root.ParseStream(isw);
+                        rapidjson::StringBuffer buffer;
+                        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+                        root.Accept(writer);
+                        std::string jsonStr(buffer.GetString());
+                        if(jsonStr == "null"){
+                            std::cout << "is null..." << std::endl; //<--always here!
+                        }else{
+                            std::cout << jsonStr.c_str() << std::endl;
+                            root["ip"] = "pito";
+                            std::ofstream ofs("JSONFiles/prueba.json");
+                            rapidjson::OStreamWrapper osw(ofs);
+                            rapidjson::Writer<rapidjson::OStreamWrapper> writer2(osw);
+                            root.Accept(writer2);
                         }
                     }
                 }

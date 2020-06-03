@@ -46,8 +46,6 @@ extern "C" int main(){
             root.Accept(writer2);
         }
     std::cout<<(root["angle z"].GetInt())<<::std::endl;
-    */
-    /*std::cout<<"jaja"<<::std::endl;
     VSPtr<int> ptr = VSPtr<int>::New();
     ptr = 5;
     VSPtr<int> ptr1 = VSPtr<int>::New();

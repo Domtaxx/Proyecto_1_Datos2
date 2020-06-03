@@ -1,23 +1,60 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.17)
+project(VSC_ext)
 
-project(VSC_ext LANGUAGES CXX)
-
-#find_package(Doxygen REQUIRED)
-#find_library(rapidjson REQUIRED_FILES)
-#doxygen_add_docs(docs . ALL)
-
-find_package(Threads REQUIRED)
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include_directories(.)
+include_directories(include)
+include_directories(include/rapidjson)
+include_directories(include/rapidjson/error)
+include_directories(include/rapidjson/internal)
+include_directories(include/rapidjson/msinttypes)
+
 add_executable(VSC_ext
-    main.cpp
-    vsptrNT.hpp
-    vsptr.hpp
-    Linked_List.hpp
-    garbage.hpp
-    garbage.cpp
-    socket_C.cpp
-    socket_C.hpp
-    socket.hpp
-    socket.cpp
-    )
+        include/rapidjson/error/en.h
+        include/rapidjson/error/error.h
+        include/rapidjson/internal/biginteger.h
+        include/rapidjson/internal/clzll.h
+        include/rapidjson/internal/diyfp.h
+        include/rapidjson/internal/dtoa.h
+        include/rapidjson/internal/ieee754.h
+        include/rapidjson/internal/itoa.h
+        include/rapidjson/internal/meta.h
+        include/rapidjson/internal/pow10.h
+        include/rapidjson/internal/regex.h
+        include/rapidjson/internal/stack.h
+        include/rapidjson/internal/strfunc.h
+        include/rapidjson/internal/strtod.h
+        include/rapidjson/internal/swap.h
+        include/rapidjson/msinttypes/inttypes.h
+        include/rapidjson/msinttypes/stdint.h
+        include/rapidjson/allocators.h
+        include/rapidjson/cursorstreamwrapper.h
+        include/rapidjson/document.h
+        include/rapidjson/encodedstream.h
+        include/rapidjson/encodings.h
+        include/rapidjson/filereadstream.h
+        include/rapidjson/filewritestream.h
+        include/rapidjson/fwd.h
+        include/rapidjson/istreamwrapper.h
+        include/rapidjson/memorybuffer.h
+        include/rapidjson/memorystream.h
+        include/rapidjson/ostreamwrapper.h
+        include/rapidjson/pointer.h
+        include/rapidjson/prettywriter.h
+        include/rapidjson/rapidjson.h
+        include/rapidjson/reader.h
+        include/rapidjson/schema.h
+        include/rapidjson/stream.h
+        include/rapidjson/stringbuffer.h
+        include/rapidjson/writer.h
+        garbage.cpp
+        garbage.hpp
+        Linked_List.hpp
+        main.cpp
+        socket.cpp
+        socket.hpp
+        socket_C.cpp
+        socket_C.hpp
+        vsptr.hpp
+        vsptrNT.hpp)
