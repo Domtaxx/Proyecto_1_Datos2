@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.17)
 project(Server)
 
 set(CMAKE_CXX_STANDARD 14)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 
 include_directories(.)
 
@@ -16,3 +18,4 @@ add_executable(Server
         socket_S.h
         vsptr.hpp
         vsptrNT.hpp)
+target_link_libraries(Server Threads::Threads)

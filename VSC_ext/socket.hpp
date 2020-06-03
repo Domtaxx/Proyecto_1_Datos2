@@ -43,12 +43,19 @@ public:
      * @return
      * Método encargado de enviar mensajes y recibirlos, los convierte en una variable de tipo std::string
      */
+    void comunicar_without_response(string userInput);
+    /**
+     * @brief comunicar con el server sin esperar respuesta
+     * @param userInput
+     * Método encargado de enviar mensajes.
+     */
     string comunicar(string userInput);
     /**
      * @brief closeSocket
      * @param socket
      * Método que finaliza la conexión del socket con el servidor.
      */
+
     void closeSocket();
     /**
      * Método que permite el singleton al ser el único capaz de acceder al constructor

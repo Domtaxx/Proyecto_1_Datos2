@@ -75,12 +75,12 @@ int Socket_S::mark_listening(){
                     //crear vsp
                     if(buffer[0] == '$'){
                         if(is_client_arr[i-1]) {
+                            std::cout<<"se crea un puntero"<<std::endl;
                             std::string LocalIdStr;
                             std::string tipo;
                             std::string json_str = get_json(buffer);
                             rapidjson::Document document;
                             document.Parse<0>(json_str.c_str()).HasParseError();
-                            std::cout<<"sadsd";
                             LocalIdStr = document["localId"].GetString();
                             tipo = document["tipo"].GetString();
                             std::cout<<tipo+"\n";
@@ -96,30 +96,36 @@ int Socket_S::mark_listening(){
                     }//asignar valor VSP
                     else if(buffer[0]== '#'){
                         if(is_client_arr[i-1]) {
+                            std::cout<<"se crea un paquete"<<std::endl;
                             std::string json_str = get_json(buffer);
                             rapidjson::Document document;
                             document.Parse<0>(json_str.c_str()).HasParseError();
                             int local_Id_VSPtr = std::stoi(document["localId"].GetString());
                             if (buffer[1] == 'd') { ;
+                                std::cout<<"se crea un paquete"<<std::endl;
                                 lista<vsptrNT *> list_ptr = gar_col->get_Vsptr_List()[i - 1];
                                 for (int a = 0; a < list_ptr.get_object_counter(); a++) {
                                     vsptrNT *ptr = list_ptr.get_data_by_pos(a);
                                     if (ptr->localID == local_Id_VSPtr) {
                                         char type = ptr->ret_Type().c_str()[0];
                                         give_VSPtr_New_Value(type, document["dato"].GetString(), ptr);
+                                        send(poll_set[i].fd, "pkg created", sizeof("pkg created"), 0);
                                     }
                                 }
                             } else if (buffer[1] == 'p') {
-                                int VSP_data_Id = std::stoi(document["data"].GetString());
+                                std::cout<<"se asigna valor"<<std::endl;
+                                std::string vsptr_id_str = document["dato"].GetString();
+                                int VSP_data_Id = std::stoi(vsptr_id_str);
                                 lista<vsptrNT *> list_ptr = gar_col->get_Vsptr_List()[i - 1];
                                 for (int a = 0; a < list_ptr.get_object_counter(); a++) {
                                     vsptrNT *ptr = list_ptr.get_data_by_pos(a);
-                                    if (ptr->localID == local_Id_VSPtr) {
-
-                                        for (int b = 0; a < list_ptr.get_object_counter(); b++) {
+                                    if (ptr->localID == VSP_data_Id) {
+                                        for (int b = 0; b < list_ptr.get_object_counter(); b++) {
                                             vsptrNT *data_ptr = list_ptr.get_data_by_pos(b);
-                                            if (data_ptr->localID == VSP_data_Id) {
-                                                *ptr = *data_ptr;
+                                            if (data_ptr->localID == local_Id_VSPtr) {
+                                                char type = data_ptr->ret_Type().c_str()[0];
+                                                give_VSPtr_New_Value(type, ptr, data_ptr);
+                                                send(poll_set[i].fd, "valor asignado", sizeof("valor asignado"), 0);
                                             }
                                         }
                                     }
@@ -129,6 +135,7 @@ int Socket_S::mark_listening(){
                     }//devolver valor dentro del VSPtr(&)
                     else if(buffer[0]== '&'){
                         if(is_client_arr[i-1]) {
+                            std::cout<< "se devuelve el valor"<<std::endl;
                             int pkg_id = -81;
                             int local_Id_VSPtr = -97;
 
@@ -157,11 +164,13 @@ int Socket_S::mark_listening(){
                                     break;
                                 }
                             }
-                            send(poll_set[i].fd, msg.c_str(), sizeof(msg.c_str()), 0);
+                            std::cout<<msg<<std::endl;
+                            send(poll_set[i].fd, msg.c_str(), msg.size(), 0);
                         }
                     }//borrar valor
                     else if(buffer[0]== '~'){
                         if(is_client_arr[i-1]) {
+                            std::cout<< "se borra el ptr"<<std::endl;
                             std::string local_Id_Str;
                             for (int a = 1; buffer[a] != '*'; a++) {
                                 local_Id_Str += buffer[a];
@@ -172,11 +181,13 @@ int Socket_S::mark_listening(){
                                 vsptrNT *ptr = list_ptr.get_data_by_pos(a);
                                 if (ptr->localID == local_Id_VSPtr) {
                                     delete ptr;
+                                    send(poll_set[i].fd, "dato borrado", sizeof("dato borrado"), 0);
                                     break;
                                 }
                             }
                         }
                     }else if(buffer[0] == '^'){
+
                         std::string usuario;
                         std::string password;
                         int h;
@@ -200,6 +211,7 @@ int Socket_S::mark_listening(){
                             }
                         }*/if(is_client_arr[i-1]){
                             send(poll_set[i].fd, "success", sizeof("success"), 0);
+                            std::cout<< "entro el usuario"<<std::endl;
                         }else{
                             send(poll_set[i].fd, "error", sizeof("error"), 0);
                         }
@@ -220,7 +232,7 @@ std::string Socket_S::data_GC(int client){
             std::string addr = pack->ret_Mem_Addr().c_str();
             std::string id = std::to_string(pack->id);
             std::string ref = std::to_string(pack->ref_counter);
-            msg += id+","+ tipo+","+val+","+addr+","+ref;
+            msg += id+","+tipo+","+val+","+addr+","+ref;
             if((i+1) == GarbageCollector::getGarbageCollector()->get_Pkg_List().get_object_counter()){
                 msg+= "&";
             }else{
@@ -291,6 +303,42 @@ void Socket_S::give_VSPtr_New_Value(char type, const std::string& new_val, vsptr
     }else if(type == 'e'){
         auto ptrA = (VSPtr<long double>*)ptr;
         *ptrA = std::stold(new_val);
+    }
+}
+
+void Socket_S::give_VSPtr_New_Value(char type, vsptrNT* val_ptr, vsptrNT* ptr){
+    if(type == 'i'){
+        auto ptrA = (VSPtr<int>*)ptr;
+        auto ptrB = (VSPtr<int>*)val_ptr;
+        *ptrA = *ptrB;
+    }else if(type == 'd'){
+        auto ptrA = (VSPtr<double>*)ptr;
+        auto ptrB = (VSPtr<double>*)val_ptr;
+        *ptrA = *ptrB;
+    }else if(type == 'f'){
+        auto ptrA = (VSPtr<float>*)ptr;
+        auto ptrB = (VSPtr<float>*)val_ptr;
+        *ptrA = *ptrB;
+    }else if(type == 'c'){
+        auto ptrA = (VSPtr<char>*)ptr;
+        auto ptrB = (VSPtr<char>*)val_ptr;
+        *ptrA = *ptrB;;
+    }else if(type == 'b'){
+        auto ptrA = (VSPtr<bool>*)ptr;
+        auto ptrB = (VSPtr<bool>*)val_ptr;
+        *ptrA = *ptrB;
+    }else if(type == 'l'){
+        auto ptrA = (VSPtr<long>*)ptr;
+        auto ptrB = (VSPtr<long>*)val_ptr;
+        *ptrA = *ptrB;
+    }else if(type == 'x'){
+        auto ptrA = (VSPtr<long long>*)ptr;
+        auto ptrB = (VSPtr<long long>*)val_ptr;
+        *ptrA = *ptrB;
+    }else if(type == 'e'){
+        auto ptrA = (VSPtr<long double>*)ptr;
+        auto ptrB = (VSPtr<long double>*)val_ptr;
+        *ptrA = *ptrB;
     }
 }
 

@@ -9,7 +9,7 @@
 #include "md5.h"
 
 bool is_not_finished = true;
-void delete_t(){
+std::thread delete_t(){
     GarbageCollector* gc = GarbageCollector::getGarbageCollector();
     while(is_not_finished){
         gc->delete_pkgs();
@@ -17,6 +17,7 @@ void delete_t(){
     }
 };
 int main(){
+    GarbageCollector::getGarbageCollector();
     std::thread p(delete_t);
     Socket_S socket = Socket_S();
     socket.start();

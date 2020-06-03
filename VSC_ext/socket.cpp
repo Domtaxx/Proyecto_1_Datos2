@@ -46,6 +46,12 @@ string Socket::comunicar(string userInput){
     return string(buf);
 }
 
+void Socket::comunicar_without_response(string userInput){
+    int sendResult = send(sock, userInput.c_str(), userInput.size()+1, 0);
+    if(sendResult == -1){
+        cout << "No se logró enviar al servidor\r\n";
+    }
+}
 
 void Socket::closeSocket(){
     close(sock);

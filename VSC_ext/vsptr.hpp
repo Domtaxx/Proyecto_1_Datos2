@@ -41,7 +41,7 @@ public:
     };
     ~VSPtr(){
         if(GarbageCollector::server_on){
-            Socket_C::remoteSocket->comunicar("~"+std::to_string(localId));
+            Socket_C::remoteSocket->comunicar_without_response("~"+std::to_string(localId)+"*");
         }else{
             GarbageCollector* gc = GarbageCollector::getGarbageCollector();
             gc->lower_ref(this->id);
@@ -50,7 +50,9 @@ public:
 
     T operator &(){
         if(GarbageCollector::server_on){
-            std::string infoDato = Socket_C::remoteSocket->comunicar("&"+localId);
+            std::string infoDato = Socket_C::remoteSocket->comunicar("&"+std::to_string(localId)+"*");
+            std::cout<<infoDato<<std::endl;
+            sleep(2);
             rapidjson::Document document;
             document.Parse<0>(infoDato.c_str()).HasParseError();
             std::string tipo = document["tipo"].GetString();
@@ -63,9 +65,8 @@ public:
             }if(tipo == "d"){
                 return std::stod(document["dato"].GetString());
             }if(tipo == "c"){
-                return document["dato"].Get<char>();
-                //return infoDato.c_str()[3];
-            }
+                return document["dato"].GetString()[0];
+            }return *(dato);
         }else{
             return *(dato);
         }
