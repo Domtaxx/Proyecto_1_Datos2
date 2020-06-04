@@ -61,6 +61,7 @@ public:
      * Método que permite el singleton al ser el único capaz de acceder al constructor
      */
     static Socket getSocket();
+    std::string wait_msg();
 private:
 
 };

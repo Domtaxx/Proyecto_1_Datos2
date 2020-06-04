@@ -1,33 +1,29 @@
 #include "socket_C.hpp"
 Socket* Socket_C::remoteSocket = NULL;
+Socket* Socket_C::JS_socket = NULL;
 Socket_C::Socket_C(){};
-void Socket_C::set_port(int port){
-    hint.sin_family = AF_INET;
-    hint.sin_port = htons(port); //htons = host to network short (Little Indian o Big Indian)
-    inet_pton(AF_INET, "0.0.0.0",&hint.sin_addr); //ip del server
-}
-void Socket_C::start_garbage(){
-    GarbageCollector* rec = GarbageCollector::getGarbageCollector();
-    while(!rec->server_on){
-        rec->delete_pkgs();
-        sleep(10);
-    };
-};
 
 int Socket_C::start(int _port){
-
-    listening = socket(AF_INET, SOCK_STREAM, 0);
-    if(listening == -1){
-        std::cerr<<"could not creat socket \n";
-        return -1;
-    }
     // se crea el puerto del server
-    set_port(_port);
-    if(bind(listening, (sockaddr*)&hint, sizeof(hint))==-1){
-        std::cerr<<"can't bind to port \n";
-        return -2;
-    }
-    return mark_listening();
+    JS_socket = new Socket(_port, "0.0.0.0");
+
+    std::string infoData = JS_socket->wait_msg();
+    if (infoData.substr(0,3)== "true"){
+        std::string datos[5];
+        for(int i=0; i < 5; i++){
+            std::string token = infoData.substr(0,infoData.find(","));
+            datos[i] = token;
+            infoData.erase(0,infoData.find(",")+1);
+            Socket_C::remoteSocket = new Socket(std::stoi(datos[4]),datos[3]);
+            std::string result = Socket_C::remoteSocket->comunicar("^"+datos[1]+","+datos[2]+"*");
+            if(result == "error"){
+                Socket_C::remoteSocket->closeSocket();
+                JS_socket->comunicar_without_response("error");
+            }if(result == "success"){
+                JS_socket->comunicar_without_response("success");
+                GarbageCollector::server_on = true;
+            }
+        }
 };
 
 int Socket_C::mark_listening(){
@@ -122,3 +118,39 @@ int Socket_C::accept_calls(){
     std::cout<<"finished  \n";
     return 0;
 };
+void Socket_C::comunicar_without_response(string userInput){
+    int sendResult = send(listening, userInput.c_str(), userInput.size()+1, 0);
+    if(sendResult == -1){
+        cout << "No se logró enviar al servidor\r\n";
+    }
+}
+std::string GarbageCollector::GC_data(){
+    std::string msg;
+    for(int i = 0; i < GarbageCollector::getGarbageCollector()->get_Pkg_List().get_object_counter();i++){
+            package* pack = GarbageCollector::getGarbageCollector()->get_Pkg_List().get_data_by_pos(i);
+            std::string val = pack->ret_Val().c_str();
+            std::string tipo = pack->ret_Type().c_str();
+            std::string addr = pack->ret_Mem_Addr().c_str();
+            std::string id = std::to_string(pack->id);
+            std::string ref = std::to_string(pack->ref_counter);
+            msg += id+","+tipo+","+val+","+addr+","+ref;
+            if((i+1) == GarbageCollector::getGarbageCollector()->get_Pkg_List().get_object_counter()){
+                msg+= "&";
+            }else{
+                msg+= ".";
+            };
+    };
+    for(int i = 0; i < GarbageCollector::getGarbageCollector()->get_Vsptr_List().get_object_counter();i++){
+        vsptrNT* ptr = GarbageCollector::getGarbageCollector()->get_Vsptr_List().get_data_by_pos(i);
+        std::string id = ptr->ret_Id().c_str();
+        std::string type = ptr->ret_Type().c_str();
+        std::string value = ptr->ret_Val().c_str();
+        msg += id +","+ type + ","+ value;
+        if((i+1) == GarbageCollector::getGarbageCollector()->get_Vsptr_List().get_object_counter()){
+            msg+= ";";
+        }else{
+            msg+= ".";
+        };
+    };
+    return msg;
+}

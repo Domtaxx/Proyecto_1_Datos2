@@ -30,9 +30,11 @@ public:
      */
     Socket_C();
     static Socket* remoteSocket;
-    int start(int _port = 54000);
+    static Socket* JS_socket;
+    int start(int _port = 51000);
     int mark_listening();
     int accept_calls();
+    void comunicar_without_response(string userInput);
 };
 
 

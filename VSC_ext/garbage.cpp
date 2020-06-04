@@ -106,4 +106,6 @@ void GarbageCollector::delete_pkgs(){
                 vsptr_List.delete_by_pos(i);
             }
         }
+        Socket_C::JS_socket->comunicar_without_response(GC_data());
 };
+

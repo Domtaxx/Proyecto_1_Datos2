@@ -29,13 +29,11 @@ int Socket::conectar(int sock, sockaddr_in hint){
 }
 
 string Socket::comunicar(string userInput){
-
     int sendResult = send(sock, userInput.c_str(), userInput.size()+1, 0);
     if(sendResult == -1){
         cout << "No se logró enviar al servidor\r\n";
     }
     char buf[4096];
-
     memset(buf, 0, 4096);
     int bytesReceived = recv(sock, buf, 4096,0);
     if(bytesReceived == 0){
@@ -52,6 +50,15 @@ void Socket::comunicar_without_response(string userInput){
         cout << "No se logró enviar al servidor\r\n";
     }
 }
+std::string Socket::wait_msg(){
+    char buf[4096];
+    memset(buf, 0, 4096);
+    int bytesReceived = recv(sock, buf, 4096,0);
+    if(bytesReceived == 0){
+        cerr << "Conexión perdida" << endl;
+    }
+    return string(buf);
+};
 
 void Socket::closeSocket(){
     close(sock);

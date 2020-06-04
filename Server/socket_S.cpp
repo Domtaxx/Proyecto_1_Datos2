@@ -187,7 +187,6 @@ int Socket_S::mark_listening(){
                             }
                         }
                     }else if(buffer[0] == '^'){
-
                         std::string usuario;
                         std::string password;
                         int h;
@@ -214,6 +213,11 @@ int Socket_S::mark_listening(){
                             std::cout<< "entro el usuario"<<std::endl;
                         }else{
                             send(poll_set[i].fd, "error", sizeof("error"), 0);
+                        }
+                    }else if(buffer[0] == '='){
+                        if(is_client_arr[i-1]) {
+                            std::string msg = data_GC(i-1);
+                            send(poll_set[i].fd, msg.c_str(), msg.size(), 0);
                         }
                     }
                 }
