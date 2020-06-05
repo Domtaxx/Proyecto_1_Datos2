@@ -20,6 +20,7 @@ public:
      * @brief Socket_S constructor
      */
     Socket_C();
+    ~Socket_C();
     static Socket* remoteSocket;
     static Socket* JS_socket;
     int start(int _port = 51000);

@@ -6,6 +6,8 @@ void delete_t(){
 };
 int main(){
     std::thread p(delete_t);
+    Socket_C socket_manager = Socket_C();
+    socket_manager.start();
     //code here
     //code end
     is_not_finished = false;
