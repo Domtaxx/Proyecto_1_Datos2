@@ -63,24 +63,30 @@ function activate(context) {
 			}if(datos == "success"){
 				vscode.window.showInformationMessage("Se logró crear la conexión con el servidor");
 			}else{
-				var valores = datos.split(',');
-				if(valores[0]== "0"){
-					htmlText+=`<p>Variable `+valores[1].toString() + `</p> 
-					<p style="padding-left: 30px;">Tipo: `+valores[2]+
-					`<br />Valor: ` +valores[3]+
-					`<br />Celda de memoria: ` +valores[4]+
-					`<br />Referencias actuales: ` +valores[5]+`</p>`;
-				}else if(valores[0] == "1"){
-					htmlText+=`<p>Puntero `+valores[1].toString() + `</p> 
-					<p style="padding-left: 30px;">Id: `+valores[1]+
-					`<br />Tipo: ` +valores[2]+
-					`<br />Valor: ` +valores[3]+`</p>`;
-				}else if(datos.endsWith(";")){
-
-					htmlText += `</body>
-								</html>`;
-					panel.webview.html = htmlText;
+				var valores = datos.split('&');
+				var arr_pkgs = valores[0].split('.');
+				
+				for(var k = 0;k<arr_pkgs.length;k++){
+					var pkg = arr_pkgs[k].split(',');
+					//id+","+tipo+","+val+","+addr+","+ref;
+					htmlText+=`<p>Variable `+pkg[0]+ `</p> 
+					<p style="padding-left: 30px;">Tipo: `+pkg[1]+
+					`<br />Valor: ` +pkg[2]+
+					`<br />Celda de memoria: ` +pkg[3]+
+					`<br />Referencias actuales: ` +pkg[4]+`</p>`;
 				}
+				var arr_ptrs = valores[1].split('.');
+				for(var p = 0;p<arr_ptrs.length;p++){
+					var ptr = arr_ptrs[p].split(',');
+					//id+","+tipo+","+val+","+addr+","+ref;
+					htmlText+=`<p>Puntero `+ptr[0] + `</p> 
+					<p style="padding-left: 30px;">Id: `+ptr[0]+
+					`<br />Tipo: ` +ptr[1]+
+					`<br />Valor: ` +ptr[2]+`</p>`;
+				}		
+				htmlText += `</body>
+							</html>`;
+				panel.webview.html = htmlText;
 			}
 		});
 
