@@ -25,7 +25,7 @@ function activate(context) {
 		// The code you place here will be executed every time your command is executed
 		
 		const folderPath = vscode.workspace.workspaceFolders[0].uri.toString().split(":")[1];
-		fs.writeFile(path.join(folderPath,"main.cpp"),'#include "vsptr.hpp" \n bool is_not_finished = true; \n	void delete_t(){\n		GarbageCollector* gc = GarbageCollector::getGarbageCollector();\n		gc->thread_function(&is_not_finished);\n	};\nint main(){\n	std::thread p(delete_t);\n	//code here\n	//code end\n	is_not_finished = false;\n	p.join();\n			return 0;\n};'
+		fs.writeFile(path.join(folderPath,"main.cpp"),'#include "vsptr.hpp" \n bool is_not_finished = true; \n	void delete_t(){\n		GarbageCollector* gc = GarbageCollector::getGarbageCollector();\n		gc->thread_function(&is_not_finished);\n	};\nint main(){\n	std::thread p(delete_t);\n	Socket_C socket_manager = Socket_C();\n	socket_manager.start();\n	//code here\n	//code end\n	is_not_finished = false;\n	p.join();\n			return 0;\n};'
 		,err=>{
 			if(err){
 				return vscode.window.showErrorMessage("Error creating main file");
@@ -34,7 +34,7 @@ function activate(context) {
 		})
 		// Display a message box to the user
 
-		/*var Client = net.createConnection;
+		var Client = net.createConnection;
 		var client = Client({port: 54000, localAddress: '127.0.0.1', localPort: 51000});
 		var datos = " ";
 		
@@ -82,7 +82,7 @@ function activate(context) {
 					panel.webview.html = htmlText;
 				}
 			}
-		});*/
+		});
 
 		const panel = vscode.window.createWebviewPanel('memoryManager', 
 		'Memory Manager',vscode.ViewColumn.One,{});
