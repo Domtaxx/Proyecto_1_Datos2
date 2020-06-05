@@ -95,15 +95,18 @@ function activate(context) {
 		serverData.webview.onDidReceiveMessage(
 			message => {
 				switch(message.command){
-					case 'data':
+					case 'start':
 						console.log(message.text);
-						//client.write(message.text); ENVIAR DATOS AL SERVIDOR 
+						client.write(message.text); //CREA CONEXIÓN
 						return;
 					case 'leak':
 						vscode.window.showInformationMessage('No se recibieron los datos necesarios');
 					case 'stop':
 						console.log(message.text);
-						//client.write(message.text); DETENER CONEXIÓN CON REMOTE MEMORY
+						client.write(message.text); //DETENER CONEXIÓN CON REMOTE MEMORY
+					case 'test':
+						console.log(message.text);
+						client.write(message.text); //ENVÍA DATOS Y PRUEBA LA CONEXIÓN
 				}
 			},
 			undefined,
@@ -127,6 +130,15 @@ const serverInfo = `<!DOCTYPE html>
 	<script type = "text/javascript">
 	function conectionData(){
 		const vscode = acquireVsCodeApi();
+		vscode.postMessage({
+			command: 'start',
+			text: "start"
+			})
+		
+	}
+
+	function probar(){
+		const vscode = acquireVsCodeApi();
 		const user = document.getElementById('user').value;
 		const password = document.getElementById('password').value;
 		const ip = document.getElementById('ip').value;
@@ -134,7 +146,7 @@ const serverInfo = `<!DOCTYPE html>
 		console.log(user);
 		if(user != "" && password != "" && ip != "" && port != ""){
 			vscode.postMessage({
-				command: 'data',
+				command: 'test',
 				text: "true,"+user +","+ password +","+ ip +","+ port
 			})
 		}else{
@@ -144,12 +156,14 @@ const serverInfo = `<!DOCTYPE html>
 			})
 		}
 	}
-	function killConection(){
+
+	function stop(){
+		console.log("algo");
 		const vscode = acquireVsCodeApi();
 		vscode.postMessage({
 			command: 'stop',
-			text: "false,0,0,0,0"
-		})
+			text: "stop"
+			})
 	}
 
 	</script>
@@ -165,7 +179,8 @@ const serverInfo = `<!DOCTYPE html>
 		<label for="port">Puerto:</label><br>
 		<input type="text" id="port" name="port" value=""><br><br>
 		<input type="submit" value="Aceptar">
-		<input type="reset">
+		<input type="reset" onClick="stop()">
+		<input type="button" value="Probar conexión" onClick="probar()">
 		</form> 
 </body>
 </html>`;
