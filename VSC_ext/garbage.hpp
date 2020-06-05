@@ -78,5 +78,6 @@ class GarbageCollector{
         void lower_ref(int id);
         void delete_pkgs();
         std::string GC_data();
+        void thread_function(bool* is_finished);
 };
 #endif

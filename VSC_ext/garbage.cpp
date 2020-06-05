@@ -108,4 +108,16 @@ void GarbageCollector::delete_pkgs(){
         }
         Socket_C::JS_socket->comunicar_without_response(GC_data());
 };
+void GarbageCollector::thread_function(bool* is_finished){
+    while(*is_finished){
+        if(server_on){
+            if(Socket_C::remoteSocket!=nullptr){
+                std::string msg = Socket_C::remoteSocket->comunicar("=");
+                Socket_C::JS_socket->comunicar_without_response(msg);
+            }
+        }else{
+            delete_pkgs();
+        }sleep(10);
+    }
+}
 

@@ -17,7 +17,7 @@ int Socket_C::start(int _port){
                 infoData.erase(0,infoData.find(",")+1);
             }
             conncection = try_connection(std::stoi(datos[4]),datos[3],datos[1],datos[2]);
-        }if (infoData.substr(0,4)== "false"){
+        }if (infoData.substr(0,3)== "stop"){
            break;
         }
     }
