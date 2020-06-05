@@ -4,6 +4,7 @@ const vscode = require('vscode');
 const net = require('net');
 const fs = require('fs');
 const path = require('path');
+const port = 51000;
 //const dom = new jsdom.JSDOM(serverDatos());
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -33,47 +34,53 @@ function activate(context) {
 			vscode.window.showInformationMessage("Everything is fine!");
 		})
 		// Display a message box to the user
-
-		var Client = net.createConnection;
-		var client = Client({port: 54000, localAddress: '127.0.0.1', localPort: 51000});
-		var datos = " ";
-		
-
-
-		client.on('connect', function() {
-		var id = this.localAddress + ': ' + this.localPort;
-		console.log('Client connected', id);
+		var server = net.createServer();
+		server.listen(port, function() {
+			console.log(`Server listening for connection requests on socket localhost:${port}`);
 		});
-
+		server.on('connection', function(socket) {
+			console.log('A new connection has been established.');
 		
-		var htmlText = `<!DOCTYPE html>
-		<html lang="en">
-		<head>
-			<meta charset="UTF-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title>Memory Remote</title>
-		</head>
-		<body>`;
+			// Now that a TCP connection has been established, the server can send data to
+			// the socket by writing to its socket.
+			socket.write('Hello, socket.');
+			
+			var datos = "";
+			var htmlText = `<!DOCTYPE html>
+			<html lang="en">
+			<head>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<title>Memory Remote</title>
+			</head>
+			<body>`;
 
-		client.on('data', function (data) {
-			datos = ''+data;
+			// The server can also receive data from the socket by reading from its socket.
+			socket.on('data', function(data) {
+				datos = ''+data;
 			console.log('Received: '+ data);
 			if(datos == "error"){
 				vscode.window.showInformationMessage("Error: no se logró crear la conexión");
 			}if(datos == "success"){
 				vscode.window.showInformationMessage("Se logró crear la conexión con el servidor");
 			}else{
-				var valores = datos.split('&');
-				var arr_pkgs = valores[0].split('.');
-				
-				for(var k = 0;k<arr_pkgs.length;k++){
-					var pkg = arr_pkgs[k].split(',');
-					//id+","+tipo+","+val+","+addr+","+ref;
-					htmlText+=`<p>Variable `+pkg[0]+ `</p> 
-					<p style="padding-left: 30px;">Tipo: `+pkg[1]+
-					`<br />Valor: ` +pkg[2]+
-					`<br />Celda de memoria: ` +pkg[3]+
-					`<br />Referencias actuales: ` +pkg[4]+`</p>`;
+				var valores = datos.split(',');
+				if(valores[0]== "0"){
+					htmlText+=`<p>Variable `+valores[1].toString() + `</p> 
+					<p style="padding-left: 30px;">Tipo: `+valores[2]+
+					`<br />Valor: ` +valores[3]+
+					`<br />Celda de memoria: ` +valores[4]+
+					`<br />Referencias actuales: ` +valores[5]+`</p>`;
+				}if(valores[0] == "1"){
+					htmlText+=`<p>Puntero `+valores[1].toString() + `</p> 
+					<p style="padding-left: 30px;">Id: `+valores[1]+
+					`<br />Tipo: ` +valores[2]+
+					`<br />Valor: ` +valores[3]+`</p>`;
+				}if(datos.endsWith(";")){
+
+					htmlText += `</body>
+								</html>`;
+					panel.webview.html = htmlText;
 				}
 				var arr_ptrs = valores[1].split('.');
 				for(var p = 0;p<arr_ptrs.length;p++){
@@ -90,6 +97,40 @@ function activate(context) {
 			}
 		});
 
+			serverData.webview.onDidReceiveMessage(
+				message => {
+					switch(message.command){
+						case 'start':
+							console.log(message.text);
+							
+							socket.write(message.text); //CREA CONEXIÓN
+							return;
+						case 'leak':
+							vscode.window.showInformationMessage('No se recibieron los datos necesarios');
+						case 'stop':
+							console.log(message.text);
+							socket.write(message.text); //DETENER CONEXIÓN CON REMOTE MEMORY
+						case 'test':
+							console.log(message.text);
+							socket.write(message.text); //ENVÍA DATOS Y PRUEBA LA CONEXIÓN
+					}
+				},
+				undefined,
+				context.subscriptions
+			);
+
+			});
+		
+			// When the socket requests to end the TCP connection with the server, the server
+			// ends the connection.
+			socket.on('end', function() {
+				console.log('Closing connection with the socket');
+			});
+		
+			// Don't forget to catch error, for your own sake.
+			socket.on('error', function(err) {
+				console.log(`Error: ${err}`);
+			});
 		const panel = vscode.window.createWebviewPanel('memoryManager', 
 		'Memory Manager',vscode.ViewColumn.One,{});
 		
@@ -99,26 +140,7 @@ function activate(context) {
 		});
 		
 		serverData.webview.html = serverInfo;
-		serverData.webview.onDidReceiveMessage(
-			message => {
-				switch(message.command){
-					case 'start':
-						console.log(message.text);
-						client.write(message.text); //CREA CONEXIÓN
-						return;
-					case 'leak':
-						vscode.window.showInformationMessage('No se recibieron los datos necesarios');
-					case 'stop':
-						console.log(message.text);
-						client.write(message.text); //DETENER CONEXIÓN CON REMOTE MEMORY
-					case 'test':
-						console.log(message.text);
-						client.write(message.text); //ENVÍA DATOS Y PRUEBA LA CONEXIÓN
-				}
-			},
-			undefined,
-			context.subscriptions
-		);
+		
 
 		vscode.window.showInformationMessage('Hello World from memoryM!');
 		
@@ -126,6 +148,7 @@ function activate(context) {
 	
 	context.subscriptions.push(disposable);
 }
+
 exports.activate = activate;
 
 const serverInfo = `<!DOCTYPE html> 
