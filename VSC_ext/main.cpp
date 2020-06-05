@@ -12,7 +12,7 @@ void delete_t(){
     }
 };
 int main(){
-    std::thread p(delete_t);
+    //std::thread p(delete_t);
 
     //Socket_C socket = Socket_C();
 
@@ -60,16 +60,8 @@ int main(){
     GarbageCollector::getGarbageCollector()->delete_pkgs();*/;
     Socket_C::remoteSocket = new Socket(std::stoi("54000"),"0.0.0.0");
     std::string result = Socket_C::remoteSocket->comunicar("^Bruno Diaz,soyBatman123*");
-    //sleep(5);
-    VSPtr<int> ptr1 = VSPtr<int>::New();
-    ptr1 = 9;
-    VSPtr<int> ptr2 = VSPtr<int>::New();
-    ptr2 = ptr1;
-    VSPtr<double> ptr3 = VSPtr<double>::New();
-    ptr3 = 6.001;
-    std::cout<<&ptr2<<std::endl;
-    is_not_finished = false;
-    p.join();
+    //is_not_finished = false;
+    //p.join();
     return 0;
 }
 
