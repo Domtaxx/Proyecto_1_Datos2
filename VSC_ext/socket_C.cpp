@@ -79,3 +79,11 @@ std::string GarbageCollector::GC_data(){
     };
     return msg;
 }
+Socket_C::~Socket_C(){
+    if(remoteSocket!=nullptr){
+        delete remoteSocket;
+    }
+    if(JS_socket!=nullptr){
+        delete JS_socket;
+    }
+}
