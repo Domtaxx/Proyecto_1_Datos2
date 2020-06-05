@@ -14,7 +14,7 @@
 
 class Socket_C{
 private:
-    bool start_main_thread;
+    
 public:
     /**
      * @brief Socket_S constructor
@@ -25,6 +25,7 @@ public:
     static Socket* JS_socket;
     int start(int _port = 51000);
     bool try_connection(int port, std::string ip, std::string username, std::string password);
+    bool start_main_thread;
 };
 
 

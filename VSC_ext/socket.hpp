@@ -19,6 +19,7 @@ using namespace std;
  */
 class Socket{
 public:
+    bool connected;
     /**
      * Constructor del socket, encargado de iniciarlizar el socket y conectarlo al servidor
     */

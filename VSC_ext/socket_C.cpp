@@ -5,25 +5,34 @@ Socket_C::Socket_C(){};
 
 int Socket_C::start(int _port){
     // se crea el puerto del server
-    JS_socket = new Socket(_port, "0.0.0.0");
     bool conncection = false;
+    JS_socket = new Socket(_port, "0.0.0.0");
     while(!conncection){
-        std::string infoData = JS_socket->wait_msg();
-        if (infoData.substr(0,3)== "true"){
-            std::string datos[5];
-            for(int i=0; i < 5; i++){
-                std::string token = infoData.substr(0,infoData.find(","));
-                datos[i] = token;
-                infoData.erase(0,infoData.find(",")+1);
+        if(!JS_socket->connected){
+            if(JS_socket!=nullptr){
+                JS_socket->closeSocket();
+                delete JS_socket;
+            }JS_socket = new Socket(_port, "0.0.0.0");
+        }else{
+            std::string infoData = JS_socket->wait_msg();
+            if (infoData.substr(0,3)== "true"){
+                std::string datos[5];
+                for(int i=0; i < 5; i++){
+                    std::string token = infoData.substr(0,infoData.find(","));
+                    datos[i] = token;
+                    infoData.erase(0,infoData.find(",")+1);
+                }
+                conncection = try_connection(std::stoi(datos[4]),datos[3],datos[1],datos[2]);
+            }if (infoData.substr(0,3)== "stop"){
+               std::cout<<"Garbage Local :3"<<std::endl;
+               break;
             }
-            conncection = try_connection(std::stoi(datos[4]),datos[3],datos[1],datos[2]);
-        }if (infoData.substr(0,3)== "stop"){
-           break;
         }
     }
     std::string msg;
     while(msg!="start" && conncection){
         msg = JS_socket->wait_msg();
+        std::cout<<"ejecuta el resto del codigo del usuario"<<std::endl;
     }start_main_thread = true;
     return 1;
 };
@@ -34,10 +43,12 @@ bool Socket_C::try_connection(int port, std::string ip, std::string username, st
         if(result == "error"){
             Socket_C::remoteSocket->closeSocket();
             JS_socket->comunicar_without_response("error");
+            std::cout<<"err de conexion"<<std::endl;
             return false;
         }else if(result == "success"){
             JS_socket->comunicar_without_response("success");
             GarbageCollector::server_on = true;
+            std::cout<<"se conecto al Server :3"<<std::endl;
             return true;
         }else{
             return false;

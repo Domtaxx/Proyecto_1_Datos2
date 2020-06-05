@@ -23,8 +23,11 @@ Socket::Socket(int puerto, std::string ip){
 int Socket::conectar(int sock, sockaddr_in hint){
     int connectResult = connect(sock, (sockaddr*)&hint, sizeof(sockaddr_in));
     if(connectResult == -1){
+        connected = false;
         return -1;
     }
+    connected = true;
+    std::cout<<"se conecto el socket"<<std::endl;
     return 0;
 }
 
