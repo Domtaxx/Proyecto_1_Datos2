@@ -14,16 +14,7 @@
 
 class Socket_C{
 private:
-    bool end = false;
-    int listening;
-    sockaddr_in hint;
-    void set_port(int port);
-    sockaddr_in client;
-    socklen_t client_Size = sizeof(client);
-    char host[NI_MAXHOST];
-    char svc[NI_MAXSERV];
-    static void start_garbage();
-
+    bool start_main_thread;
 public:
     /**
      * @brief Socket_S constructor
@@ -32,9 +23,7 @@ public:
     static Socket* remoteSocket;
     static Socket* JS_socket;
     int start(int _port = 51000);
-    int mark_listening();
-    int accept_calls();
-    void comunicar_without_response(string userInput);
+    bool try_connection(int port, std::string ip, std::string username, std::string password);
 };
 
 

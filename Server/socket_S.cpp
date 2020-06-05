@@ -197,18 +197,23 @@ int Socket_S::mark_listening(){
                             password+=buffer[h];
                         }
                         password = md5(password.c_str());
-                        std::ifstream ifs("JSONFiles/prueba.json");
+                        std::ifstream ifs("JSONFiles/package.json");
                         rapidjson::IStreamWrapper isw (ifs);
                         rapidjson::Document doc;
-                        doc.ParseStream(isw);
-                        is_client_arr[i-1] = true;
-                        /*for(const auto& point : doc["clients"].GetArray()){
-                            std::string user = point["usuario"].GetString();
-                            std::string pass = point["password"].GetString();
+                        doc.ParseStream(isw).HasParseError();
+
+                        const auto& user_data_arr = doc["clients"];
+                        assert(user_data_arr.IsArray());
+                        for (rapidjson::SizeType o = 0; o < user_data_arr.Size(); o++){ // Uses SizeType instead of size_t
+                            const rapidjson::Value& c = user_data_arr[o];
+                            std::string user = c["usuario"].GetString();
+                            std::string pass = c["password"].GetString();
                             if(user==usuario && pass==password){
                                 is_client_arr[i-1] = true;
+                                break;
                             }
-                        }*/if(is_client_arr[i-1]){
+                        }
+                        if(is_client_arr[i-1]){
                             send(poll_set[i].fd, "success", sizeof("success"), 0);
                             std::cout<< "entro el usuario"<<std::endl;
                         }else{
