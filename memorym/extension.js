@@ -102,7 +102,6 @@ function activate(context) {
 					switch(message.command){
 						case 'start':
 							console.log(message.text);
-							
 							socket.write(message.text); //CREA CONEXIÓN
 							return;
 						case 'leak':
@@ -118,19 +117,18 @@ function activate(context) {
 				undefined,
 				context.subscriptions
 			);
-
-			});
-		
-			// When the socket requests to end the TCP connection with the server, the server
-			// ends the connection.
 			socket.on('end', function() {
 				console.log('Closing connection with the socket');
 			});
-		
 			// Don't forget to catch error, for your own sake.
 			socket.on('error', function(err) {
 				console.log(`Error: ${err}`);
 			});
+		});
+		
+			// When the socket requests to end the TCP connection with the server, the server
+			// ends the connection.
+			
 		const panel = vscode.window.createWebviewPanel('memoryManager', 
 		'Memory Manager',vscode.ViewColumn.One,{});
 		
