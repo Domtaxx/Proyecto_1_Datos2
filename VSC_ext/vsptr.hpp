@@ -52,7 +52,6 @@ public:
         if(GarbageCollector::server_on){
             std::string infoDato = Socket_C::remoteSocket->comunicar("&"+std::to_string(localId)+"*");
             std::cout<<infoDato<<std::endl;
-            sleep(2);
             rapidjson::Document document;
             document.Parse<0>(infoDato.c_str()).HasParseError();
             std::string tipo = document["tipo"].GetString();

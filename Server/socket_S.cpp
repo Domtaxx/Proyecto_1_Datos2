@@ -160,7 +160,12 @@ int Socket_S::mark_listening(){
                             for (int a = 0; a < list_pkg.get_object_counter(); a++) {
                                 package *pkg = list_pkg.get_data_by_pos(a);
                                 if (pkg->id == pkg_id) {
-                                    msg += pkg->ret_Val() + "\"}";
+                                    std::string nuLL = "null";
+                                    if(pkg->ret_Val() == nuLL){
+                                        msg += 0 + "\"}";
+                                    }else {
+                                        msg += pkg->ret_Val() + "\"}";
+                                    }
                                     break;
                                 }
                             }
@@ -245,7 +250,7 @@ std::string Socket_S::data_GC(int client){
             if((i+1) == GarbageCollector::getGarbageCollector()->get_Pkg_List().get_object_counter()){
                 msg+= "&";
             }else{
-                msg+= ".";
+                msg+= "*";
             };
     };
     for(int i = 0; i < GarbageCollector::getGarbageCollector()->get_Vsptr_List()[client].get_object_counter();i++){
@@ -257,7 +262,7 @@ std::string Socket_S::data_GC(int client){
         if((i+1) == GarbageCollector::getGarbageCollector()->get_Vsptr_List()[client].get_object_counter()){
             msg+= ";";
         }else{
-            msg+= ".";
+            msg+= "*";
         };
     };
     return msg;

@@ -24,11 +24,12 @@ int Socket::conectar(int sock, sockaddr_in hint){
     int connectResult = connect(sock, (sockaddr*)&hint, sizeof(sockaddr_in));
     if(connectResult == -1){
         connected = false;
+        std::cout<<"no se conecto el socket"<<std::endl;
         return -1;
-    }
-    connected = true;
-    std::cout<<"se conecto el socket"<<std::endl;
-    return 0;
+    }else{
+        connected = true;
+        std::cout<<"el socket esta activo"<<std::endl;
+    }return 0;
 }
 
 string Socket::comunicar(string userInput){
@@ -43,7 +44,7 @@ string Socket::comunicar(string userInput){
         cerr << "Conexión perdida" << endl;
     }
 
-
+    std::cout<<buf<<std::endl;
     return string(buf);
 }
 
@@ -60,6 +61,7 @@ std::string Socket::wait_msg(){
     if(bytesReceived == 0){
         cerr << "Conexión perdida" << endl;
     }
+    std::cout<<buf<<std::endl;
     return string(buf);
 };
 

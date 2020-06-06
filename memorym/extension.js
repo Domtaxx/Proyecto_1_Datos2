@@ -46,15 +46,6 @@ function activate(context) {
 			socket.write('Hello, socket.');
 			
 			var datos = "";
-			var htmlText = `<!DOCTYPE html>
-			<html lang="en">
-			<head>
-				<meta charset="UTF-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<title>Memory Remote</title>
-			</head>
-			<body>`;
-
 			// The server can also receive data from the socket by reading from its socket.
 			socket.on('data', function(data) {
 				datos = ''+data;
@@ -64,35 +55,35 @@ function activate(context) {
 			}if(datos == "success"){
 				vscode.window.showInformationMessage("Se logró crear la conexión con el servidor");
 			}else{
-				var valores = datos.split(',');
-				if(valores[0]== "0"){
-					htmlText+=`<p>Variable `+valores[1].toString() + `</p> 
-					<p style="padding-left: 30px;">Tipo: `+valores[2]+
-					`<br />Valor: ` +valores[3]+
-					`<br />Celda de memoria: ` +valores[4]+
-					`<br />Referencias actuales: ` +valores[5]+`</p>`;
-				}if(valores[0] == "1"){
-					htmlText+=`<p>Puntero `+valores[1].toString() + `</p> 
-					<p style="padding-left: 30px;">Id: `+valores[1]+
-					`<br />Tipo: ` +valores[2]+
-					`<br />Valor: ` +valores[3]+`</p>`;
-				}if(datos.endsWith(";")){
-
-					htmlText += `</body>
-								</html>`;
-					panel.webview.html = htmlText;
+				var htmlText = `<!DOCTYPE html>
+			<html lang="en">
+			<head>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<title>Memory Remote</title>
+			</head>
+			<body>`;
+				var valores = datos.split('&');
+				var arr_pkgs = valores[0].split('*');
+				for(var r = 0;r<arr_pkgs.length;r++){
+					var pkg = arr_pkgs[r].split(',');
+					htmlText = htmlText + `<p>Variable `+ pkg[0] + `</p> 
+					<p style="padding-left: 30px;">Tipo: `+pkg[1]+
+					`<br />Valor: ` +pkg[2]+
+					`<br />Celda de memoria: ` +pkg[3]+
+					`<br />Referencias actuales: ` +pkg[4]+`</p>`;
 				}
-				var arr_ptrs = valores[1].split('.');
+				var arr_ptrs = valores[1].split('*');
 				for(var p = 0;p<arr_ptrs.length;p++){
 					var ptr = arr_ptrs[p].split(',');
 					//id+","+tipo+","+val+","+addr+","+ref;
-					htmlText+=`<p>Puntero `+ptr[0] + `</p> 
+					htmlText = htmlText +`<p>Puntero `+ptr[0] + `</p> 
 					<p style="padding-left: 30px;">Id: `+ptr[0]+
 					`<br />Tipo: ` +ptr[1]+
 					`<br />Valor: ` +ptr[2]+`</p>`;
-				}		
-				htmlText += `</body>
-							</html>`;
+				}
+				htmlText = htmlText + `</body>
+								</html>`;
 				panel.webview.html = htmlText;
 			}
 		});
@@ -156,8 +147,8 @@ const serverInfo = `<!DOCTYPE html>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Datos de conexión</title>
 	<script type = "text/javascript">
+	const vscode = acquireVsCodeApi();
 	function conectionData(){
-		const vscode = acquireVsCodeApi();
 		vscode.postMessage({
 			command: 'start',
 			text: "start"
@@ -166,7 +157,6 @@ const serverInfo = `<!DOCTYPE html>
 	}
 
 	function probar(){
-		const vscode = acquireVsCodeApi();
 		const user = document.getElementById('user').value;
 		const password = document.getElementById('password').value;
 		const ip = document.getElementById('ip').value;
@@ -187,7 +177,6 @@ const serverInfo = `<!DOCTYPE html>
 
 	function stop(){
 		console.log("algo");
-		const vscode = acquireVsCodeApi();
 		vscode.postMessage({
 			command: 'stop',
 			text: "stop"

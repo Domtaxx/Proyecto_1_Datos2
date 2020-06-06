@@ -6,6 +6,8 @@ Socket_C::Socket_C(){};
 int Socket_C::start(int _port){
     // se crea el puerto del server
     bool conncection = false;
+    std::string stop = "stop";
+    std::string _true = "true";
     JS_socket = new Socket(_port, "0.0.0.0");
     while(!conncection){
         if(!JS_socket->connected){
@@ -15,7 +17,9 @@ int Socket_C::start(int _port){
             }JS_socket = new Socket(_port, "0.0.0.0");
         }else{
             std::string infoData = JS_socket->wait_msg();
-            if (infoData.substr(0,3)== "true"){
+            std::string user_true = infoData.substr(0,4);
+            if (user_true == _true){
+                std::cout<<"aiuda\n";
                 std::string datos[5];
                 for(int i=0; i < 5; i++){
                     std::string token = infoData.substr(0,infoData.find(","));
@@ -23,8 +27,9 @@ int Socket_C::start(int _port){
                     infoData.erase(0,infoData.find(",")+1);
                 }
                 conncection = try_connection(std::stoi(datos[4]),datos[3],datos[1],datos[2]);
-            }if (infoData.substr(0,3)== "stop"){
+            }if(infoData == stop){
                std::cout<<"Garbage Local :3"<<std::endl;
+               GarbageCollector::server_on = false;
                break;
             }
         }
@@ -73,7 +78,7 @@ std::string GarbageCollector::GC_data(){
             if((i+1) == GarbageCollector::getGarbageCollector()->get_Pkg_List().get_object_counter()){
                 msg+= "&";
             }else{
-                msg+= ".";
+                msg+= "*";
             };
     };
     for(int i = 0; i < GarbageCollector::getGarbageCollector()->get_Vsptr_List().get_object_counter();i++){
@@ -85,7 +90,7 @@ std::string GarbageCollector::GC_data(){
         if((i+1) == GarbageCollector::getGarbageCollector()->get_Vsptr_List().get_object_counter()){
             msg+= ";";
         }else{
-            msg+= ".";
+            msg+= "*";
         };
     };
     return msg;
