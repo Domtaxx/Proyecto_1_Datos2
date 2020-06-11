@@ -4,6 +4,8 @@ const vscode = require('vscode');
 const net = require('net');
 const fs = require('fs');
 const path = require('path');
+const{ execSync } = require('child_process');
+var clone = require('git-clone');
 const port = 51000;
 //const dom = new jsdom.JSDOM(serverDatos());
 // this method is called when your extension is activated
@@ -26,6 +28,7 @@ function activate(context) {
 		// The code you place here will be executed every time your command is executed
 		
 		const folderPath = vscode.workspace.workspaceFolders[0].uri.toString().split(":")[1];
+		
 		fs.writeFile(path.join(folderPath,"main.cpp"),'#include "vsptr.hpp" \n bool is_not_finished = true; \n	void delete_t(){\n		GarbageCollector* gc = GarbageCollector::getGarbageCollector();\n		gc->thread_function(&is_not_finished);\n	};\nint main(){\n	std::thread p(delete_t);\n	Socket_C socket_manager = Socket_C();\n	socket_manager.start();\n	//code here\n	//code end\n	is_not_finished = false;\n	p.join();\n			return 0;\n};'
 		,err=>{
 			if(err){
@@ -33,6 +36,11 @@ function activate(context) {
 			}
 			vscode.window.showInformationMessage("Everything is fine!");
 		})
+		const Fpath = path.join(folderPath,'');
+		execSync('git clone https://github.com/Domtaxx/Proyecto_1_Datos2', {
+			stdio: [0, 1, 2], // we need this so node will print the command output
+			cwd: path.resolve(Fpath, ''), // path to where you want to save the file
+		  })
 		// Display a message box to the user
 		var server = net.createServer();
 		server.listen(port, function() {
