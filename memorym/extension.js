@@ -37,7 +37,7 @@ function activate(context) {
 			vscode.window.showInformationMessage("Everything is fine!");
 		})
 		const Fpath = path.join(folderPath,'');
-		execSync('git clone https://github.com/Domtaxx/Proyecto_1_Datos2', {
+		execSync('git clone https://github.com/Alvaov/MemoryManagerClient', {
 			stdio: [0, 1, 2], // we need this so node will print the command output
 			cwd: path.resolve(Fpath, ''), // path to where you want to save the file
 		  })
