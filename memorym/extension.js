@@ -102,6 +102,26 @@ function activate(context) {
 							socket.write(message.text); //DETENER CONEXIÓN CON REMOTE MEMORY
 						case 'test':
 							console.log(message.text);
+							var userValues = ''+message.text;
+							var elements = userValues.split(",");
+							console.log(userValues);
+							fs.readFile('./conexiones.json', 'utf8', (err, jsonString) => {
+								if (err) {
+									console.log("File read failed:", err)
+									return
+								}
+								console.log('File data:', jsonString)
+								try {
+									const customer = JSON.parse(jsonString)
+									console.log("Customer address is:", customer.conexiones) // => "Customer address is: Infinity Loop Drive"
+									customer['conexiones'].push({"usuario":''+elements[1],"contraseña":''+elements[2],"ip":''+elements[3],"puerto":''+elements[4]});
+									const jsonStr = JSON.stringify(customer);
+									console.log(jsonStr);
+									updateJSON(jsonStr);
+								} catch(err) {
+									console.log('Error parsing JSON string:', err)
+								} 
+							})
 							socket.write(message.text); //ENVÍA DATOS Y PRUEBA LA CONEXIÓN
 					}
 				},
@@ -117,9 +137,24 @@ function activate(context) {
 			});
 		});
 		
-			// When the socket requests to end the TCP connection with the server, the server
-			// ends the connection.
-			
+		/*fs.readFile('./conexiones.json', 'utf8', (err, jsonString) => {
+			if (err) {
+				console.log("File read failed:", err)
+				return
+			}
+			console.log('File data:', jsonString)
+			try {
+				const customer = JSON.parse(jsonString)
+				console.log("Customer address is:", customer.conexiones) // => "Customer address is: Infinity Loop Drive"
+				customer['conexiones'].push({"usuario":"Carlos","contraseña":"1346","ip":"127.0.0.1","puerto":"69"});
+				const jsonStr = JSON.stringify(customer);
+				console.log(jsonStr);
+				updateJSON(jsonStr);
+			} catch(err) {
+				console.log('Error parsing JSON string:', err)
+			} 
+		})*/
+		console.log(vscode.Location.name);
 		const panel = vscode.window.createWebviewPanel('memoryManager', 
 		'Memory Manager',vscode.ViewColumn.One,{});
 		
@@ -207,4 +242,29 @@ function deactivate() {}
 module.exports = {
 	activate,
 	deactivate
+}
+
+function obtainJson(path) {
+	fs.readFile(path, 'utf8', (err, jsonString) => {
+		if (err) {
+			console.log("Error reading file from disk:", err)
+			return
+		}
+		try {
+			const customer = JSON.parse(jsonString)
+			return customer;
+		} catch(err) {
+			console.log('Error parsing JSON string:', err)
+		}
+	})
+}
+
+function updateJSON(jsonString) {
+	fs.writeFile('./conexiones.json', jsonString, err => {
+		if (err) {
+			console.log('Error writing file', err)
+		} else {
+			console.log('Successfully wrote file')
+		}
+	})
 }
