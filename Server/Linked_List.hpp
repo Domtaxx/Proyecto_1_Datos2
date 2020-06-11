@@ -20,7 +20,7 @@ struct node{
 
 /**
  * @brief its a list that has an associated type.
- * 
+ *
  * @tparam generic, it represents a generic type.
  */
 template<typename generic>
@@ -57,10 +57,6 @@ class lista{
          * @param pos position of the node
          * @return node<generic>* the pointer to that node
          */
-
-        /**
-         * @brief Construct a new lista object
-         */
         node<generic>* get_node_by_pos(int pos){
             if(object_counter<=0 || pos>=object_counter){
                 return nullptr;
@@ -72,7 +68,10 @@ class lista{
             }
         };
     public:
-        lista(){};  
+      /**
+       * @brief Construct a new lista object
+       */
+        lista(){};
 
         /**
          * @brief a function to validate if the list is empty
@@ -125,7 +124,7 @@ class lista{
                 deleteNode(temp);
             }
         };
-        
+
         /**
          * @brief Get the data by pos object
          * @tparam generic, it represents a generic type.
@@ -185,7 +184,7 @@ class lista{
             }
         };
         //void swap(int pos1, int pos2);
-        
+
         /**
          * @brief Get the object counter object
          * @return int return the object_counter

@@ -11,7 +11,6 @@ add_executable(VSC_ext
         garbage.cpp
         garbage.hpp
         Linked_List.hpp
-        main.cpp
         socket.cpp
         socket.hpp
         socket_C.cpp
@@ -19,3 +18,5 @@ add_executable(VSC_ext
         vsptr.hpp
         vsptrNT.hpp)
 target_link_libraries(VSC_ext Threads::Threads)
+find_package(Doxygen REQUIRED)
+doxygen_add_docs(docs . ALL)

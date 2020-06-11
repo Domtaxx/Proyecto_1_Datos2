@@ -19,3 +19,5 @@ add_executable(Server
         vsptr.hpp
         vsptrNT.hpp)
 target_link_libraries(Server Threads::Threads)
+find_package(Doxygen REQUIRED)
+doxygen_add_docs(docs . ALL)
