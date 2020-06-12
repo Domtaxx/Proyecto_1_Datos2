@@ -7,6 +7,7 @@ const path = require('path');
 const{ execSync } = require('child_process');
 var clone = require('git-clone');
 const port = 51000;
+var estado = "false"
 //const dom = new jsdom.JSDOM(serverDatos());
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -28,7 +29,7 @@ function activate(context) {
 		// The code you place here will be executed every time your command is executed
 		
 		const folderPath = vscode.workspace.workspaceFolders[0].uri.toString().split(":")[1];
-		
+		fs.writeFile(path.join(folderPath,"conexiones.json"),"{\"conexiones\":\"[]\"}",err=>{});
 		fs.writeFile(path.join(folderPath,"main.cpp"),'#include "vsptr.hpp" \n bool is_not_finished = true; \n	void delete_t(){\n		GarbageCollector* gc = GarbageCollector::getGarbageCollector();\n		gc->thread_function(&is_not_finished);\n	};\nint main(){\n	std::thread p(delete_t);\n	Socket_C socket_manager = Socket_C();\n	socket_manager.start();\n	//code here\n	//code end\n	is_not_finished = false;\n	p.join();\n			return 0;\n};'
 		,err=>{
 			if(err){
@@ -70,7 +71,8 @@ function activate(context) {
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 				<title>Memory Remote</title>
 			</head>
-			<body>`;
+			<body>
+				<p> Estado del servidor: ${estado}</p>`;
 				var valores = datos.split('&');
 				var arr_pkgs = valores[0].split('*');
 				for(var r = 0;r<arr_pkgs.length;r++){
@@ -102,12 +104,14 @@ function activate(context) {
 						case 'start':
 							console.log(message.text);
 							socket.write(message.text); //CREA CONEXIÓN
+							estado = "true"
 							return;
 						case 'leak':
 							vscode.window.showInformationMessage('No se recibieron los datos necesarios');
 						case 'stop':
 							console.log(message.text);
 							socket.write(message.text); //DETENER CONEXIÓN CON REMOTE MEMORY
+							estado = "false"
 						case 'test':
 							console.log(message.text);
 							var userValues = ''+message.text;
@@ -138,10 +142,12 @@ function activate(context) {
 			);
 			socket.on('end', function() {
 				console.log('Closing connection with the socket');
+				estado = "false"
 			});
 			// Don't forget to catch error, for your own sake.
 			socket.on('error', function(err) {
 				console.log(`Error: ${err}`);
+				estado = "false"
 			});
 		});
 		

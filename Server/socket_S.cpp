@@ -96,7 +96,6 @@ int Socket_S::mark_listening(){
                     }//asignar valor VSP
                     else if(buffer[0]== '#'){
                         if(is_client_arr[i-1]) {
-                            std::cout<<"se crea un paquete"<<std::endl;
                             std::string json_str = get_json(buffer);
                             rapidjson::Document document;
                             document.Parse<0>(json_str.c_str()).HasParseError();
@@ -110,6 +109,7 @@ int Socket_S::mark_listening(){
                                         char type = ptr->ret_Type().c_str()[0];
                                         give_VSPtr_New_Value(type, document["dato"].GetString(), ptr);
                                         send(poll_set[i].fd, "pkg created", sizeof("pkg created"), 0);
+                                        break;
                                     }
                                 }
                             } else if (buffer[1] == 'p') {
@@ -126,6 +126,7 @@ int Socket_S::mark_listening(){
                                                 char type = data_ptr->ret_Type().c_str()[0];
                                                 give_VSPtr_New_Value(type, ptr, data_ptr);
                                                 send(poll_set[i].fd, "valor asignado", sizeof("valor asignado"), 0);
+                                                break;
                                             }
                                         }
                                     }
