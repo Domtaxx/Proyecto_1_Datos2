@@ -29,7 +29,7 @@ function activate(context) {
 		// The code you place here will be executed every time your command is executed
 		
 		const folderPath = vscode.workspace.workspaceFolders[0].uri.toString().split(":")[1];
-		fs.writeFile(path.join(folderPath,"conexiones.json"),"{\"conexiones\":\"[]\"}",err=>{});
+		fs.writeFile(path.join(folderPath,"conexiones.json"),"{\"conexiones\":[]}",err=>{});
 		fs.writeFile(path.join(folderPath,"main.cpp"),'#include "vsptr.hpp" \n bool is_not_finished = true; \n	void delete_t(){\n		GarbageCollector* gc = GarbageCollector::getGarbageCollector();\n		gc->thread_function(&is_not_finished);\n	};\nint main(){\n	std::thread p(delete_t);\n	Socket_C socket_manager = Socket_C();\n	socket_manager.start();\n	//code here\n	//code end\n	is_not_finished = false;\n	p.join();\n			return 0;\n};'
 		,err=>{
 			if(err){
@@ -117,7 +117,7 @@ function activate(context) {
 							var userValues = ''+message.text;
 							var elements = userValues.split(",");
 							console.log(userValues);
-							fs.readFile('./conexiones.json', 'utf8', (err, jsonString) => {
+							fs.readFile(path.join(vscode.workspace.workspaceFolders[0].uri.toString().split(":")[1],'conexiones.json'), 'utf8', (err, jsonString) => {
 								if (err) {
 									console.log("File read failed:", err)
 									return
@@ -171,6 +171,18 @@ function activate(context) {
 		console.log(vscode.Location.name);
 		const panel = vscode.window.createWebviewPanel('memoryManager', 
 		'Memory Manager',vscode.ViewColumn.One,{});
+		var htmlText = `<!DOCTYPE html>
+			<html lang="en">
+			<head>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<title>Memory Remote</title>
+			</head>
+			<body>
+			<p> Estado del servidor: ${estado}</p>
+			</body>
+			</html>`
+			
 		
 		const serverData = vscode.window.createWebviewPanel('datosConexion', 
 		'Datos de conexion',vscode.ViewColumn.One,{
@@ -178,7 +190,7 @@ function activate(context) {
 		});
 		
 		serverData.webview.html = serverInfo;
-		
+		panel.webview.html = htmlText;
 
 		vscode.window.showInformationMessage('Hello World from memoryM!');
 		
